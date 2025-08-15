@@ -1,0 +1,2 @@
+# DMJ
+Daily Momentum Journal
