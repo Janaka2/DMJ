@@ -246,7 +246,16 @@
 
         // --- Firebase Configuration ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-journal-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        //const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+  apiKey: "AIzaSyBp-4EVbu0PhSqmbNr9sRbNuL3BohIq-UU",
+  authDomain: "my-momentum-journal.firebaseapp.com",
+  projectId: "my-momentum-journal",
+  storageBucket: "my-momentum-journal.firebasestorage.app",
+  messagingSenderId: "15658344765",
+  appId: "1:15658344765:web:330b28e81e71b8ff5d6554",
+  measurementId: "G-JKKBC64KES"
+};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let db, auth, userId;
