@@ -67,6 +67,30 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* Microphone button styles */
+        .mic-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 9999px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .mic-btn:hover {
+            background-color: #e5e7eb;
+        }
+        .mic-btn.is-listening {
+            background-color: #ef4444;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -94,24 +118,28 @@
                     </div>
                     <form id="journal-form">
                         <div class="space-y-6">
-                            <div>
+                            <div class="relative">
                                 <label for="state-and-focus" class="block text-md font-medium text-gray-700">What State am I in, and What am I Choosing to Focus On?</label>
-                                <textarea id="state-and-focus" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" placeholder="e.g., I am feeling grateful and choosing to focus on solutions."></textarea>
+                                <textarea id="state-and-focus" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <button type="button" class="mic-btn" data-target="state-and-focus" title="Speak your entry">🎤</button>
                             </div>
-                            <div>
+                            <div class="relative">
                                 <label for="progress-made" class="block text-md font-medium text-gray-700">What Progress Did I Make Today? (No matter how small!)</label>
-                                <textarea id="progress-made" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" placeholder="Progress equals happiness. What's the evidence of your momentum?"></textarea>
+                                <textarea id="progress-made" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <button type="button" class="mic-btn" data-target="progress-made" title="Speak your entry">🎤</button>
                             </div>
-                            <div>
+                            <div class="relative">
                                 <div class="flex justify-between items-center">
                                     <label for="challenge-and-gift" class="block text-md font-medium text-gray-700">What Was Today's Challenge, and What is the Gift Within It?</label>
                                     <button type="button" id="reframe-challenge-btn" title="Reframe this challenge as a growth opportunity" class="text-indigo-600 hover:text-indigo-800 text-lg font-bold">✨</button>
                                 </div>
-                                <textarea id="challenge-and-gift" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" placeholder="Every problem is an opportunity in disguise. What's the lesson?"></textarea>
+                                <textarea id="challenge-and-gift" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <button type="button" class="mic-btn" data-target="challenge-and-gift" title="Speak your entry">🎤</button>
                             </div>
-                            <div>
+                            <div class="relative">
                                 <label for="new-standard" class="block text-md font-medium text-gray-700">What is the New Standard I'm Committing To NOW?</label>
-                                <textarea id="new-standard" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" placeholder="Raise your standard. What is your new commitment starting this moment?"></textarea>
+                                <textarea id="new-standard" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <button type="button" class="mic-btn" data-target="new-standard" title="Speak your entry">🎤</button>
                             </div>
                         </div>
                         <div class="mt-8 flex justify-between items-center">
@@ -180,7 +208,6 @@
                              <button id="connect-dots-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500">✨ Connect Dots</button>
                              <button id="role-model-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-400 hover:bg-pink-500">✨ Role Model</button>
                              <button id="gratitude-amplifier-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-400 hover:bg-green-500">✨ Amplify Gratitude</button>
-                             <!-- Newest Features -->
                              <button id="reauthor-past-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-400 hover:bg-red-500">✨ Re-author Past</button>
                              <button id="uncover-archetype-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-400 hover:bg-purple-500">✨ Uncover Archetype</button>
                              <button id="future-self-dialogue-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-400 hover:bg-cyan-500">✨ Future Self Q&A</button>
@@ -283,6 +310,12 @@
         let allEntries = []; // Local cache of entries
         let currentAudio = null; // To manage playing audio
         let userSettings = { ageGroup: 'unspecified', voice: 'Charon', language: 'English', autoSpeak: false }; // Default settings
+        
+        // --- Speech Recognition ---
+        let recognition;
+        let isListening = false;
+        let activeTextarea = null;
+        let activeMicButton = null;
 
         // --- App Initialization ---
         async function initialize() {
@@ -309,6 +342,7 @@
                 }
                 
                 setupUI();
+                initializeSpeechRecognition();
 
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
@@ -351,7 +385,6 @@
             document.getElementById('connect-dots-btn').addEventListener('click', connectTheDots);
             document.getElementById('role-model-btn').addEventListener('click', openRoleModelModal);
             document.getElementById('gratitude-amplifier-btn').addEventListener('click', amplifyGratitude);
-            // Newest Feature Listeners
             document.getElementById('reauthor-past-btn').addEventListener('click', reauthorPast);
             document.getElementById('uncover-archetype-btn').addEventListener('click', uncoverArchetype);
             document.getElementById('future-self-dialogue-btn').addEventListener('click', openFutureSelfDialogueModal);
@@ -709,7 +742,6 @@
             try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t amplify your gratitude. Please try again.</p>'); }
         }
         
-        // --- Newest AI Features ---
         async function reauthorPast() {
             if (allEntries.length < 5) { alert("You need at least 5 entries to re-author your past."); return; }
             const latestEntry = allEntries[0];
@@ -839,7 +871,7 @@
                     speakBtn.textContent = '⏸️'; // Playing state
                     currentAudio.play();
                     currentAudio.onended = () => {
-                        speakBtn.textContent = '�';
+                        speakBtn.textContent = '🔊';
                         currentAudio = null;
                     };
                 } else {
@@ -1010,6 +1042,80 @@
                 console.error("Error loading settings:", error);
             }
         }
+        
+        function initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.warn("Speech Recognition API is not supported in this browser.");
+                document.querySelectorAll('.mic-btn').forEach(btn => btn.style.display = 'none');
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US'; 
+
+            recognition.onstart = () => {
+                isListening = true;
+                if (activeMicButton) {
+                    activeMicButton.classList.add('is-listening');
+                    activeMicButton.innerHTML = '🛑';
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                if (activeMicButton) {
+                    activeMicButton.classList.remove('is-listening');
+                    activeMicButton.innerHTML = '🎤';
+                }
+                activeTextarea = null;
+                activeMicButton = null;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error", event.error);
+                isListening = false;
+            };
+
+            recognition.onresult = (event) => {
+                if (!activeTextarea) return;
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if(finalTranscript.trim()){
+                     activeTextarea.value += (activeTextarea.value.length > 0 ? ' ' : '') + finalTranscript;
+                }
+            };
+            
+            document.querySelectorAll('.mic-btn').forEach(btn => {
+                btn.addEventListener('click', toggleListening);
+            });
+        }
+
+        function toggleListening(event) {
+            const button = event.currentTarget;
+            const targetId = button.dataset.target;
+            const targetTextarea = document.getElementById(targetId);
+
+            if (!targetTextarea) return;
+
+            if (isListening) {
+                recognition.stop();
+                if (activeMicButton === button) {
+                    return;
+                }
+            }
+            
+            activeTextarea = targetTextarea;
+            activeMicButton = button;
+            recognition.start();
+        }
+
 
         // --- Start the App ---
         document.addEventListener('DOMContentLoaded', initialize);
