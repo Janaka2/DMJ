@@ -6,6 +6,9 @@
     <title>Daily Momentum Journal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- jsPDF and html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -228,7 +231,8 @@
             <div id="ai-response-container" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 text-gray-700">
                 <!-- AI response will be injected here -->
             </div>
-            <div id="ai-modal-footer" class="mt-6 text-right">
+            <div id="ai-modal-footer" class="mt-6 text-right space-x-2">
+                 <!-- Export buttons will be added here dynamically -->
                 <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Close
                 </button>
@@ -979,6 +983,16 @@
                     speakText(responseContainer.innerText, pace);
                 }, 100);
             }
+            
+            // Add export buttons after content is loaded
+            const footer = document.getElementById('ai-modal-footer');
+            footer.innerHTML = `
+                <button id="export-pdf-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">Save as PDF</button>
+                <button id="export-txt-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700">Save as Text</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Close</button>
+            `;
+            document.getElementById('export-pdf-btn').addEventListener('click', exportAiInsightToPdf);
+            document.getElementById('export-txt-btn').addEventListener('click', exportAiInsightToTxt);
         }
 
         window.closeAiModal = function() {
@@ -1114,6 +1128,33 @@
             activeTextarea = targetTextarea;
             activeMicButton = button;
             recognition.start();
+        }
+        
+        // --- Export Functions ---
+        function exportAiInsightToPdf() {
+            const { jsPDF } = window.jspdf;
+            const insightContent = document.getElementById('ai-response-container');
+            const doc = new jsPDF();
+
+            doc.html(insightContent, {
+                callback: function (doc) {
+                    doc.save('journal-insight.pdf');
+                },
+                x: 10,
+                y: 10,
+                width: 190,
+                windowWidth: 800
+            });
+        }
+
+        function exportAiInsightToTxt() {
+            const insightText = document.getElementById('ai-response-container').innerText;
+            const blob = new Blob([insightText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'journal-insight.txt';
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
 
 
