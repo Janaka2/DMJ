@@ -194,7 +194,7 @@
     <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeSettingsModal()">
         <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8" onclick="event.stopPropagation()">
             <h3 class="text-2xl font-bold mb-6">Personalize Your Journal</h3>
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div>
                     <label for="age-group-select" class="block text-sm font-medium text-gray-700">Your Age Group</label>
                     <select id="age-group-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -228,6 +228,17 @@
                         <option value="Sinhala">සිංහල</option>
                     </select>
                 </div>
+                <!-- Auto-Speak Toggle -->
+                <div class="flex items-center justify-between pt-2">
+                    <span class="flex-grow flex flex-col">
+                        <span class="text-sm font-medium text-gray-900">Auto-Speak Insights</span>
+                        <span class="text-sm text-gray-500">Automatically read AI responses aloud.</span>
+                    </span>
+                    <label for="autospeak-toggle" class="inline-flex relative items-center cursor-pointer">
+                        <input type="checkbox" value="" id="autospeak-toggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
             </div>
             <div class="mt-8 flex justify-end gap-4">
                 <button onclick="closeSettingsModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
@@ -246,22 +257,13 @@
 
         // --- Firebase Configuration ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-journal-app';
-        //const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const firebaseConfig = {
-  apiKey: "AIzaSyBp-4EVbu0PhSqmbNr9sRbNuL3BohIq-UU",
-  authDomain: "my-momentum-journal.firebaseapp.com",
-  projectId: "my-momentum-journal",
-  storageBucket: "my-momentum-journal.firebasestorage.app",
-  messagingSenderId: "15658344765",
-  appId: "1:15658344765:web:330b28e81e71b8ff5d6554",
-  measurementId: "G-JKKBC64KES"
-};
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let db, auth, userId;
         let allEntries = []; // Local cache of entries
         let currentAudio = null; // To manage playing audio
-        let userSettings = { ageGroup: 'unspecified', voice: 'Charon', language: 'English' }; // Default settings
+        let userSettings = { ageGroup: 'unspecified', voice: 'Charon', language: 'English', autoSpeak: false }; // Default settings
 
         // --- App Initialization ---
         async function initialize() {
@@ -376,7 +378,7 @@
         
         // --- AI Integration ---
         async function callGemini(prompt, isJson = false) {
-            const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
+            const apiKey = ""; // API key will be injected by the environment
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             let context = '';
@@ -595,7 +597,7 @@
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentAudio = null;
-                document.getElementById('speak-btn').textContent = '🔊';
+                document.getElementById('speak-btn').textContent = '�';
                 return;
             }
             const speakBtn = document.getElementById('speak-btn');
@@ -621,7 +623,7 @@
                         }
                     },
                 };
-                const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
+                const apiKey = ""; // API key will be injected by the environment
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
@@ -697,6 +699,12 @@
             const speakBtn = document.getElementById('speak-btn');
             speakBtn.classList.remove('hidden');
             speakBtn.onclick = () => speakText(responseContainer.innerText, pace);
+
+            if (userSettings.autoSpeak) {
+                setTimeout(() => {
+                    speakText(responseContainer.innerText, pace);
+                }, 100);
+            }
         }
 
         window.closeAiModal = function() {
@@ -715,6 +723,7 @@
             document.getElementById('age-group-select').value = userSettings.ageGroup;
             document.getElementById('voice-select').value = userSettings.voice;
             document.getElementById('language-select').value = userSettings.language;
+            document.getElementById('autospeak-toggle').checked = userSettings.autoSpeak;
             document.getElementById('settings-modal').style.display = 'flex';
         }
 
@@ -731,6 +740,7 @@
                 ageGroup: document.getElementById('age-group-select').value,
                 voice: document.getElementById('voice-select').value,
                 language: document.getElementById('language-select').value,
+                autoSpeak: document.getElementById('autospeak-toggle').checked,
             };
 
             const settingsRef = doc(db, `artifacts/${appId}/users/${userId}/settings/preferences`);
