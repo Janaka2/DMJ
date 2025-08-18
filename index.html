@@ -257,7 +257,16 @@
 
         // --- Firebase Configuration ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-journal-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+            apiKey: "AIzaSyBp-4EVbu0PhSqmbNr9sRbNuL3BohIq-UU",
+            authDomain: "my-momentum-journal.firebaseapp.com",
+            projectId: "my-momentum-journal",
+            storageBucket: "my-momentum-journal.firebasestorage.app",
+            messagingSenderId: "15658344765",
+            appId: "1:15658344765:web:330b28e81e71b8ff5d6554",
+            measurementId: "G-JKKBC64KES"
+            };
+        //const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let db, auth, userId;
@@ -378,7 +387,7 @@
         
         // --- AI Integration ---
         async function callGemini(prompt, isJson = false) {
-            const apiKey = ""; // API key will be injected by the environment
+            const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";// API key will be injected by the environment
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             let context = '';
@@ -623,7 +632,7 @@
                         }
                     },
                 };
-                const apiKey = ""; // API key will be injected by the environment
+                const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
