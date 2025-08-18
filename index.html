@@ -165,6 +165,25 @@
                              <button id="future-self-letter-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600">✨ Future Self</button>
                              <button id="dream-interpreter-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-500 hover:bg-slate-600">✨ Dream Interpreter</button>
                              <button id="create-meditation-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-500 hover:bg-emerald-600">✨ Create Meditation</button>
+                             <button id="stoic-wisdom-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-stone-500 hover:bg-stone-600">✨ Stoic Wisdom</button>
+                             <button id="check-thinking-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600">✨ Check Thinking</button>
+                             <button id="action-plan-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-500 hover:bg-sky-600">✨ Action Plan</button>
+                             <button id="find-metaphor-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600">✨ Find Metaphor</button>
+                             <button id="name-gremlin-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-fuchsia-600 hover:bg-fuchsia-700">✨ Name Gremlin</button>
+                             <button id="socratic-guide-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-lime-600 hover:bg-lime-700">✨ Socratic Guide</button>
+                             <button id="heros-journey-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700">✨ Hero's Journey</button>
+                             <button id="saboteur-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700">✨ Saboteur ID</button>
+                             <button id="visualize-future-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-700 hover:bg-rose-800">✨ Visualize Future</button>
+                             <button id="meet-parts-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600">✨ Meet Your Parts</button>
+                             <button id="unhook-thoughts-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600">✨ Unhook Thought</button>
+                             <button id="six-perspectives-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600">✨ 6 Perspectives</button>
+                             <button id="connect-dots-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500">✨ Connect Dots</button>
+                             <button id="role-model-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-400 hover:bg-pink-500">✨ Role Model</button>
+                             <button id="gratitude-amplifier-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-400 hover:bg-green-500">✨ Amplify Gratitude</button>
+                             <!-- Newest Features -->
+                             <button id="reauthor-past-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-400 hover:bg-red-500">✨ Re-author Past</button>
+                             <button id="uncover-archetype-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-400 hover:bg-purple-500">✨ Uncover Archetype</button>
+                             <button id="future-self-dialogue-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-400 hover:bg-cyan-500">✨ Future Self Q&A</button>
                          </div>
                     </div>
                 </div>
@@ -257,16 +276,7 @@
 
         // --- Firebase Configuration ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-journal-app';
-        const firebaseConfig = {
-            apiKey: "AIzaSyBp-4EVbu0PhSqmbNr9sRbNuL3BohIq-UU",
-            authDomain: "my-momentum-journal.firebaseapp.com",
-            projectId: "my-momentum-journal",
-            storageBucket: "my-momentum-journal.firebasestorage.app",
-            messagingSenderId: "15658344765",
-            appId: "1:15658344765:web:330b28e81e71b8ff5d6554",
-            measurementId: "G-JKKBC64KES"
-            };
-        //const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let db, auth, userId;
@@ -326,6 +336,25 @@
             document.getElementById('create-meditation-btn').addEventListener('click', createMeditation);
             document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
             document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+            document.getElementById('stoic-wisdom-btn').addEventListener('click', getStoicWisdom);
+            document.getElementById('check-thinking-btn').addEventListener('click', checkCognitiveDistortions);
+            document.getElementById('action-plan-btn').addEventListener('click', createActionPlan);
+            document.getElementById('find-metaphor-btn').addEventListener('click', findMetaphor);
+            document.getElementById('name-gremlin-btn').addEventListener('click', nameMyGremlin);
+            document.getElementById('socratic-guide-btn').addEventListener('click', socraticGuide);
+            document.getElementById('heros-journey-btn').addEventListener('click', reframeAsHerosJourney);
+            document.getElementById('saboteur-btn').addEventListener('click', identifySaboteur);
+            document.getElementById('visualize-future-btn').addEventListener('click', createFutureVisualization);
+            document.getElementById('meet-parts-btn').addEventListener('click', meetYourParts);
+            document.getElementById('unhook-thoughts-btn').addEventListener('click', unhookFromThoughts);
+            document.getElementById('six-perspectives-btn').addEventListener('click', getSixPerspectives);
+            document.getElementById('connect-dots-btn').addEventListener('click', connectTheDots);
+            document.getElementById('role-model-btn').addEventListener('click', openRoleModelModal);
+            document.getElementById('gratitude-amplifier-btn').addEventListener('click', amplifyGratitude);
+            // Newest Feature Listeners
+            document.getElementById('reauthor-past-btn').addEventListener('click', reauthorPast);
+            document.getElementById('uncover-archetype-btn').addEventListener('click', uncoverArchetype);
+            document.getElementById('future-self-dialogue-btn').addEventListener('click', openFutureSelfDialogueModal);
         }
 
         // --- Firestore Logic ---
@@ -387,7 +416,7 @@
         
         // --- AI Integration ---
         async function callGemini(prompt, isJson = false) {
-            const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";// API key will be injected by the environment
+            const apiKey = ""; // API key will be injected by the environment
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             let context = '';
@@ -556,6 +585,157 @@
             try { updateModalContent(await callGemini(prompt), 'meditative'); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a meditation script. Please try again.</p>'); }
         }
 
+        async function getStoicWisdom() {
+            if (allEntries.length < 1) { alert("You need at least one entry to get Stoic wisdom."); return; }
+            const lastEntry = allEntries[0];
+            const prompt = `Act as a Stoic philosopher like Marcus Aurelius. Read my latest journal entry and offer a short, powerful reflection based on Stoic principles (e.g., focusing on what's in my control, the obstacle is the way, amor fati). Quote a relevant Stoic idea and apply it directly to my situation. Format using markdown.\n\nMy Entry:\n- State & Focus: ${lastEntry.stateAndFocus}\n- Progress: ${lastEntry.progressMade || 'N/A'}\n- Challenge: ${lastEntry.challengeAndGift || 'N/A'}`;
+            openAiModal("A Stoic's Reflection", "Consulting the ancient Stoics...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t get a Stoic reflection. Please try again.</p>'); }
+        }
+
+        async function checkCognitiveDistortions() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to check your thinking patterns."); return; }
+            const prompt = `Act as a compassionate CBT therapist. Analyze the following description of a challenge for potential cognitive distortions (like catastrophizing, all-or-nothing thinking, mind-reading, overgeneralization). If you find one, gently identify it, explain in simple terms why it might be a distorted way of thinking, and offer a more balanced, reframed thought. If no clear distortion is present, affirm the user's feelings and offer encouragement. Format using markdown.\n\nChallenge: "${challengeText}"`;
+            openAiModal("Checking Your Thinking", "Analyzing your thought patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t analyze your thinking patterns. Please try again.</p>'); }
+        }
+
+        async function createActionPlan() {
+            const newStandardText = document.getElementById('new-standard').value.trim();
+            if (!newStandardText) { alert("Please commit to a new standard to create an action plan."); return; }
+            const prompt = `Act as a productivity coach. Based on the user's 'new standard', create a simple, concrete 3-step action plan they can start *today*. Each step should be small, clear, and actionable. Explain why this plan will help build momentum towards their new standard. Format using markdown.\n\nNew Standard: "${newStandardText}"`;
+            openAiModal("Your Immediate Action Plan", "Building your steps to success...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create an action plan. Please try again.</p>'); }
+        }
+        
+        async function findMetaphor() {
+            if (allEntries.length < 1) { alert("You need at least one entry to find a metaphor."); return; }
+            const lastEntry = allEntries[0];
+            const prompt = `Act as a creative storyteller. Read the following journal entry and create a short, insightful metaphor or a single-paragraph story that captures the essence of the user's day, their struggle, and their breakthrough. The metaphor should be illuminating and offer a new perspective. Format using markdown.\n\nMy Entry:\n- State & Focus: ${lastEntry.stateAndFocus}\n- Progress: ${lastEntry.progressMade || 'N/A'}\n- Challenge: ${lastEntry.challengeAndGift || 'N/A'}`;
+            openAiModal("Your Day as a Metaphor", "Distilling your experience into a story...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a metaphor for you. Please try again.</p>'); }
+        }
+
+        async function nameMyGremlin() {
+            const challenges = allEntries.map(e => e.challengeAndGift).filter(c => c && c.trim() !== '');
+            if (challenges.length < 3) { alert("You need at least three entries with challenges noted to identify a recurring 'gremlin'."); return; }
+            const corpus = challenges.slice(0, 10).join('\n---\n');
+            const prompt = `Act as a wise and insightful coach (like a character from a fantasy novel). Analyze the user's recurring challenges from their journal. Give a creative, memorable name to the 'gremlin' or 'inner critic' archetype that seems to be causing these challenges (e.g., 'The Specter of "Not Enough"', 'The Siren of Tomorrow', 'The Architect of Invisible Walls'). Describe this gremlin's typical behavior and its core fear. Finally, offer one simple, actionable quest or strategy to start disarming it. Format using markdown.\n\nRecent Challenges:\n${corpus}`;
+            openAiModal("Naming Your Gremlin", "Identifying the pattern in your challenges...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your gremlin. Please try again.</p>'); }
+        }
+
+        async function socraticGuide() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to begin the Socratic dialogue."); return; }
+            const prompt = `Act as a Socratic guide. The user is facing a challenge. Your goal is NOT to give advice, but to help them find their own answer. Ask them a series of 3-4 powerful, open-ended questions that will help them clarify their thinking, explore their assumptions, and identify their own next steps. The questions should be thought-provoking and empowering. Format using markdown with each question as a numbered list item.\n\nMy Challenge: "${challengeText}"`;
+            openAiModal("A Socratic Guide", "Formulating questions to guide you...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate Socratic questions. Please try again.</p>'); }
+        }
+
+        async function reframeAsHerosJourney() {
+            if (allEntries.length < 3) { alert("You need at least three entries to frame your Hero's Journey."); return; }
+            const corpus = allEntries.slice(0, 5).map(e => `Entry:\n- Progress: ${e.progressMade || 'N/A'}\n- Challenge: ${e.challengeAndGift || 'N/A'}`).join('\n---\n');
+            const prompt = `Act as a mythologist like Joseph Campbell. Analyze my recent journal entries, focusing on challenges and progress. Frame my recent experiences within one of the stages of the Hero's Journey (e.g., The Call to Adventure, Refusal of the Call, Meeting the Mentor, The Ordeal, The Reward). Explain which stage I'm in, why it fits my situation, and what the next stage on the path might look like. Be inspiring and use mythological language. Format using markdown.\n\nRecent Entries:\n${corpus}`;
+            openAiModal("Your Hero's Journey", "Mapping your story to the great myths...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t map your Hero\'s Journey. Please try again.</p>'); }
+        }
+
+        async function identifySaboteur() {
+            const challenges = allEntries.map(e => e.challengeAndGift).filter(c => c && c.trim() !== '');
+            if (challenges.length < 3) { alert("You need at least three entries with challenges to identify a Saboteur."); return; }
+            const corpus = challenges.slice(0, 10).join('\n---\n');
+            const prompt = `Act as a coach familiar with the Positive Intelligence (PQ) framework. Based on my recent challenges, identify which of the 10 'Saboteur' archetypes (Judge, Controller, Avoider, Victim, Pleaser, Restless, Stickler, Hyper-Achiever, Hyper-Vigilant, Hyper-Rational) seems most active. Describe this Saboteur's characteristics, its core lie, and how it might be negatively impacting me. Offer one simple mental exercise or reframe to weaken its influence. Format using markdown.\n\nRecent Challenges:\n${corpus}`;
+            openAiModal("Identify Your Saboteur", "Analyzing your challenges for Saboteur patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your Saboteur. Please try again.</p>'); }
+        }
+
+        async function createFutureVisualization() {
+            const newStandardText = document.getElementById('new-standard').value.trim();
+            if (!newStandardText) { alert("Please commit to a 'New Standard' to create a visualization for it."); return; }
+            const prompt = `Act as a visualization coach. Based on my 'New Standard', write a short (200-250 words), vivid, sensory-rich guided visualization script. Use the second person ('You see...', 'You feel...', 'You hear...'). The script should guide me to experience the feeling of having already achieved this new standard. It should be calming and empowering. End with an instruction to take a deep breath and bring the feeling back into the present moment. Format using markdown.\n\nMy New Standard: "${newStandardText}"`;
+            openAiModal("Visualize Your New Standard", "Creating your visualization script...");
+            try { updateModalContent(await callGemini(prompt), 'meditative'); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a visualization script. Please try again.</p>'); }
+        }
+
+        async function meetYourParts() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe your current challenge to meet your inner parts."); return; }
+            const prompt = `Act as a compassionate Internal Family Systems (IFS) therapist. Based on my current challenge, which of my inner 'parts' (e.g., a protective 'Manager', a reactive 'Firefighter', or a vulnerable 'Exile') might be activated right now? Describe what each part might be trying to do for me and what it might be feeling. Offer a gentle, curious question I can ask one of these parts to understand it better. Format using markdown.\n\nMy Challenge: "${challengeText}"`;
+            openAiModal("Meet Your Inner Parts", "Getting to know your internal family...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your inner parts. Please try again.</p>'); }
+        }
+
+        async function unhookFromThoughts() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe a challenging thought to learn how to unhook from it."); return; }
+            const prompt = `Act as an Acceptance and Commitment Therapy (ACT) practitioner. I am struggling with a difficult thought or feeling related to this challenge: "${challengeText}". Provide one simple but effective cognitive defusion exercise to help me get some distance from my thoughts. Explain the exercise clearly and simply. Examples include thanking my mind, labeling thoughts ("I'm having the thought that..."), or imagining thoughts as leaves on a stream. Format using markdown.`;
+            openAiModal("Unhook From Your Thoughts", "Creating a mindfulness exercise for you...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a defusion exercise. Please try again.</p>'); }
+        }
+
+        async function getSixPerspectives() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe your challenge to explore it with the Six Thinking Hats."); return; }
+            const prompt = `Act as a facilitator using Edward de Bono's Six Thinking Hats. My challenge is: "${challengeText}". Generate one powerful, open-ended question for each of the six hats to help me explore this challenge from all angles. Present the response clearly with the hat color and name.\n\n- **White Hat (Facts & Information):**\n- **Red Hat (Feelings & Intuition):**\n- **Black Hat (Cautions & Risks):**\n- **Yellow Hat (Benefits & Optimism):**\n- **Green Hat (Creativity & New Ideas):**\n- **Blue Hat (Process & Next Steps):**\n\nFormat the output using markdown.`;
+            openAiModal("Six Perspectives on Your Challenge", "Putting on the thinking hats...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate the six perspectives. Please try again.</p>'); }
+        }
+
+        async function connectTheDots() {
+            if (allEntries.length < 10) { alert("You need at least 10 entries to see meaningful connections over time."); return; }
+            const latestEntry = allEntries[0];
+            const olderEntries = allEntries.slice(5); // Look at entries older than the last 5
+            const corpus = olderEntries.map(e => `Entry from ${e.createdAt.toDate().toLocaleDateString()}:\n- State & Focus: ${e.stateAndFocus}\n- Challenge: ${e.challengeAndGift || 'N/A'}`).join('\n---\n');
+            const prompt = `Act as an insightful historian of the self. My latest journal entry is:\n- State & Focus: "${latestEntry.stateAndFocus}"\n- Progress: "${latestEntry.progressMade || 'N/A'}"\n- Challenge: "${latestEntry.challengeAndGift || 'N/A'}"\n\nNow, look through these older entries and find one that shows a significant contrast or demonstrates a clear line of progress leading to today's entry. Quote both the old entry and the new entry, and write a short, insightful analysis of the connection, growth, or change you've found. Format using markdown.\n\nOlder Entries:\n${corpus}`;
+            openAiModal("Connecting the Dots", "Looking for patterns in your history...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t find a connection right now. Please try again.</p>'); }
+        }
+
+        async function roleModelMindset(roleModel) {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to get a role model's perspective."); return; }
+            const prompt = `Act as a mentor channeling the mindset of ${roleModel}. My current challenge is: "${challengeText}". How would ${roleModel} think about this problem? What advice would they give me? Frame it in their likely tone and style, focusing on their known principles and character traits. Format using markdown.`;
+            updateModalContent("<p>Channeling their mindset...</p>");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t channel that mindset. Please try again.</p>'); }
+        }
+
+        async function amplifyGratitude() {
+            const progressText = document.getElementById('progress-made').value.trim();
+            if (!progressText) { alert("Please write about some progress you made to amplify your gratitude for it."); return; }
+            const prompt = `Act as a gratitude coach. Read this statement of progress: "${progressText}". Now, expand on it. Write a short reflection that amplifies the gratitude. What other small things had to happen for this progress to be possible? Who else might have contributed, directly or indirectly? What future opportunities does this progress open up? Help me see the web of interconnected positivity. Format using markdown.`;
+            openAiModal("Amplifying Your Gratitude", "Finding more reasons to be thankful...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t amplify your gratitude. Please try again.</p>'); }
+        }
+        
+        // --- Newest AI Features ---
+        async function reauthorPast() {
+            if (allEntries.length < 5) { alert("You need at least 5 entries to re-author your past."); return; }
+            const latestEntry = allEntries[0];
+            const pastChallengeEntry = allEntries.find(e => e.challengeAndGift && e.challengeAndGift.trim() !== '');
+            if (!pastChallengeEntry) { alert("Could not find a past entry with a significant challenge to re-author."); return; }
+            
+            const prompt = `Act as a narrative therapist. Here is a past challenge a user faced: "${pastChallengeEntry.challengeAndGift}" on ${pastChallengeEntry.createdAt.toDate().toLocaleDateString()}. And here is their most recent entry: "${latestEntry.stateAndFocus}". Rewrite the story of the past challenge, not as a moment of failure, but as a crucial turning point. Frame it as the necessary event that taught them the skills or gave them the perspective they have today. Show how the past self's struggle paved the way for the present self's strength. Format using markdown.`;
+            openAiModal("Re-authoring Your Past", "Looking back with new eyes...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t re-author that memory. Please try again.</p>'); }
+        }
+
+        async function uncoverArchetype() {
+            if (allEntries.length < 1) { alert("You need at least one entry to uncover your archetype."); return; }
+            const latestEntry = allEntries[0];
+            const prompt = `Act as a Jungian analyst. Based on this journal entry, what is the dominant archetype the user is embodying today (e.g., The Warrior, The Sage, The Innocent, The Explorer, The Creator, The Ruler, The Magician, The Lover, The Jester, The Caregiver, The Everyman, The Rebel)? Describe the archetype, explain why their entry points to it with specific examples, and offer one piece of advice for how this archetype can best navigate the day ahead. Format using markdown.\n\nToday's Entry:\n- State & Focus: "${latestEntry.stateAndFocus}"\n- Progress: "${latestEntry.progressMade || 'N/A'}"\n- Challenge: "${latestEntry.challengeAndGift || 'N/A'}"`;
+            openAiModal("Uncovering Your Archetype", "Analyzing your entry for archetypal patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your archetype. Please try again.</p>'); }
+        }
+
+        async function futureSelfDialogue(question) {
+            const corpus = allEntries.map(e => `Entry: Progress was "${e.progressMade || 'not specified'}", challenge was "${e.challengeAndGift || 'not specified'}", new standard was "${e.newStandard || 'not specified'}".`).slice(0, 15).join('\n');
+            const prompt = `You are the user's wise, compassionate Future Self, five years from now. You have successfully navigated many challenges and grown immensely. Your past self (the user) is asking you a question about their current challenge. Read their question and their past journal entries to understand their journey. Then, answer their question with wisdom, perspective, and encouragement. Do not give simple answers, but guide them towards their own strength. Sign off warmly.\n\nMy past journey:\n${corpus}\n\nMy question for you is: "${question}"`;
+            updateModalContent("<p>Consulting your Future Self...</p>");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t connect with your Future Self. Please try again.</p>'); }
+        }
+
         // --- TTS and Modal Controls ---
         
         // Helper to decode base64
@@ -606,7 +786,7 @@
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentAudio = null;
-                document.getElementById('speak-btn').textContent = '�';
+                document.getElementById('speak-btn').textContent = '🔊';
                 return;
             }
             const speakBtn = document.getElementById('speak-btn');
@@ -632,7 +812,7 @@
                         }
                     },
                 };
-                const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
+                const apiKey = ""; // API key will be injected by the environment
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
@@ -659,7 +839,7 @@
                     speakBtn.textContent = '⏸️'; // Playing state
                     currentAudio.play();
                     currentAudio.onended = () => {
-                        speakBtn.textContent = '🔊';
+                        speakBtn.textContent = '�';
                         currentAudio = null;
                     };
                 } else {
@@ -688,6 +868,59 @@
                 <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
             `;
             document.getElementById('submit-dream-btn').addEventListener('click', interpretDream);
+        }
+
+        function openRoleModelModal() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) {
+                alert("Please write down your current challenge before seeking a role model's perspective.");
+                return;
+            }
+            openAiModal("Role Model Mindset", "");
+            const responseContainer = document.getElementById('ai-response-container');
+            const modalFooter = document.getElementById('ai-modal-footer');
+            responseContainer.innerHTML = `
+                <p class="text-sm text-gray-600 mb-4">Whose mindset would you like to channel for your current challenge? This could be anyone—a historical figure, a mentor, an author, a fictional character.</p>
+                <input type="text" id="role-model-input" class="w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="e.g., Marcus Aurelius, a wise old owl, my grandfather">
+            `;
+            modalFooter.innerHTML = `
+                <button id="submit-role-model-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-500 hover:bg-pink-600">Get Perspective</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+            `;
+            document.getElementById('submit-role-model-btn').addEventListener('click', () => {
+                const roleModel = document.getElementById('role-model-input').value.trim();
+                if (roleModel) {
+                    roleModelMindset(roleModel);
+                } else {
+                    alert("Please enter a role model.");
+                }
+            });
+        }
+
+        function openFutureSelfDialogueModal() {
+            if (allEntries.length < 5) {
+                alert("You need at least 5 entries to have a meaningful dialogue with your Future Self.");
+                return;
+            }
+            openAiModal("Dialogue with Your Future Self", "");
+            const responseContainer = document.getElementById('ai-response-container');
+            const modalFooter = document.getElementById('ai-modal-footer');
+            responseContainer.innerHTML = `
+                <p class="text-sm text-gray-600 mb-4">Ask your wise Future Self a question about a current challenge or uncertainty. They have the benefit of hindsight and want to see you succeed.</p>
+                <textarea id="future-self-q-input" rows="4" class="w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="e.g., What's the most important thing for me to remember as I navigate this career change?"></textarea>
+            `;
+            modalFooter.innerHTML = `
+                <button id="submit-future-self-q-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-600">Ask Your Future Self</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+            `;
+            document.getElementById('submit-future-self-q-btn').addEventListener('click', () => {
+                const question = document.getElementById('future-self-q-input').value.trim();
+                if (question) {
+                    futureSelfDialogue(question);
+                } else {
+                    alert("Please enter a question for your Future Self.");
+                }
+            });
         }
 
         function openAiModal(title, loadingMessage) {
