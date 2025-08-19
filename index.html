@@ -99,13 +99,24 @@
 <body class="text-gray-800">
 
     <div id="app-container" class="min-h-screen p-4 sm:p-6 lg:p-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
+        <!-- Login Screen -->
+        <div id="login-screen" class="max-w-md mx-auto text-center mt-20 bg-white p-8 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-gray-900">Welcome to Your Journal</h1>
+            <p class="mt-2 text-gray-600">Sign in to continue your journey from any device.</p>
+            <button id="sign-in-btn" class="mt-8 inline-flex items-center justify-center w-full py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C44.598,32.331,48,25.474,48,24C48,22.659,47.862,21.35,47.611,20.083z"/></svg>
+                Sign in with Google
+            </button>
+        </div>
+
+        <!-- Main App Content (hidden by default) -->
+        <div id="main-content" class="hidden">
             <header class="mb-8 text-center relative">
                 <h1 class="text-4xl sm:text-5xl font-bold text-gray-900">Daily Momentum Journal</h1>
                 <p class="mt-2 text-lg text-gray-600">Take command of your focus and create forward momentum.</p>
-                <div id="auth-info" class="mt-4 text-sm text-gray-500 bg-white p-2 rounded-lg inline-block shadow-sm">
-                    Loading user ID...
+                <div id="auth-info" class="mt-4 text-sm text-gray-500 bg-white p-2 rounded-lg inline-flex items-center gap-4 shadow-sm">
+                    <span id="user-id-display">Loading user ID...</span>
+                    <button id="sign-out-btn" class="text-xs bg-red-500 text-white font-semibold py-1 px-3 rounded-full hover:bg-red-600 transition-colors">Sign Out</button>
                 </div>
                 <button id="settings-btn" class="absolute top-0 right-0 text-2xl p-2 hover:bg-gray-200 rounded-full transition-colors">⚙️</button>
             </header>
@@ -169,13 +180,15 @@
                             </button>
                         </div>
                     </div>
-                    <div id="past-entries-container" class="space-y-6 max-h-[40vh] overflow-y-auto pr-2 flex-grow">
-                        <!-- Entries will be loaded here -->
+                    <div class="flex-grow max-h-[40vh] overflow-y-auto pr-2">
                         <div id="loading-state" class="text-center py-10">
                             <p class="text-gray-500">Loading your entries...</p>
                         </div>
                          <div id="no-entries-message" class="text-center py-10 hidden">
                             <p class="text-gray-500">You haven't written any entries yet. Fill out the form to begin your journey!</p>
+                        </div>
+                        <div id="past-entries-container" class="space-y-6">
+                            <!-- Entries will be loaded here -->
                         </div>
                     </div>
                     <!-- AI Tools Section -->
@@ -302,7 +315,7 @@
     <script type="module">
         // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
@@ -331,19 +344,22 @@
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
-                        document.getElementById('auth-info').textContent = `Your secure User ID: ${userId}`;
+                        document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
                         await loadSettings();
                         loadEntries();
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('main-content').classList.remove('hidden');
                     } else {
-                        document.getElementById('auth-info').textContent = 'Not signed in.';
+                        userId = null;
+                        document.getElementById('login-screen').classList.remove('hidden');
+                        document.getElementById('main-content').classList.add('hidden');
+                        document.getElementById('past-entries-container').innerHTML = ''; // Clear entries on sign out
                     }
                 });
 
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                } 
                 
                 setupUI();
                 initializeSpeechRecognition();
@@ -354,10 +370,30 @@
             }
         }
         
+        // --- Authentication Functions ---
+        async function signInWithGoogle() {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Error signing in with Google:", error);
+            }
+        }
+
+        async function signOutUser() {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Error signing out:", error);
+            }
+        }
+
         // --- UI Setup ---
         function setupUI() {
             document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('journal-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('sign-in-btn').addEventListener('click', signInWithGoogle);
+            document.getElementById('sign-out-btn').addEventListener('click', signOutUser);
             document.getElementById('weekly-summary-btn').addEventListener('click', getWeeklySummary);
             document.getElementById('suggest-focus-btn').addEventListener('click', getTodayFocus);
             document.getElementById('inspire-me-btn').addEventListener('click', getInspirationalPrompt);
@@ -426,18 +462,17 @@
 
             onSnapshot(entriesQuery, (snapshot) => {
                 loadingState.style.display = 'none';
+                container.innerHTML = ''; // Clear previous entries
                 allEntries = snapshot.docs.map(doc => doc.data());
                 if (snapshot.empty) {
                     noEntriesMessage.style.display = 'block';
-                    container.innerHTML = '';
-                    container.appendChild(noEntriesMessage);
                 } else {
                     noEntriesMessage.style.display = 'none';
-                    container.innerHTML = '';
                     allEntries.forEach(entry => container.appendChild(createEntryCard(entry)));
                 }
             }, (error) => {
                 console.error("Error fetching entries:", error);
+                loadingState.style.display = 'none';
                 container.innerHTML = '<p class="text-red-500">Could not load your past entries.</p>';
             });
         }
@@ -822,7 +857,7 @@
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentAudio = null;
-                document.getElementById('speak-btn').textContent = '🔊';
+                document.getElementById('speak-btn').textContent = '�';
                 return;
             }
             const speakBtn = document.getElementById('speak-btn');
