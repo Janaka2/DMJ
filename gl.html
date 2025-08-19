@@ -426,6 +426,7 @@
         e.preventDefault();
         if (!userId) {
             console.error("User not signed in.");
+            alert("Error: You are not signed in. Please refresh the page.");
             return;
         }
         const entryData = {
@@ -437,6 +438,7 @@
         };
         if (!entryData.stateAndFocus) {
             console.warn("The 'State and Focus' field cannot be empty.");
+            alert("The 'State and Focus' field cannot be empty.");
             return;
         }
         try {

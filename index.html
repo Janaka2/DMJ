@@ -275,7 +275,7 @@
     <script type="module">
         // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Configuration ---
@@ -296,7 +296,8 @@
         let allEntries = []; // Local cache of entries
         let currentAudio = null; // To manage playing audio
         let userSettings = { ageGroup: 'unspecified', voice: 'Charon', language: 'English', autoSpeak: false }; // Default settings
-        
+        let entriesUnsubscribe = null; // To hold the listener cleanup function
+
         // --- Speech Recognition ---
         let recognition;
         let isListening = false;
@@ -311,24 +312,42 @@
                 auth = getAuth(app);
 
                 onAuthStateChanged(auth, async (user) => {
-                    if (user) {
+                // Always clean up the old listener when auth state changes
+                if (entriesUnsubscribe) {
+                    entriesUnsubscribe();
+                    entriesUnsubscribe = null;
+                }
+
+                if (user && !user.isAnonymous) {
+                    // This is a permanent user, signed in with Google or custom token.
                         userId = user.uid;
+
+                    if (!user.displayName) {
+                        await user.reload();
+                    }
+
                         document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
-                        await loadSettings();
-                        loadEntries();
+
+                    await loadSettings(userId);
+                    loadEntries(userId); // Pass UID directly
+
                         document.getElementById('login-screen').classList.add('hidden');
                         document.getElementById('main-content').classList.remove('hidden');
                     } else {
-                        userId = null;
+                    // User is anonymous, signed out, or null. Show the login screen.
+                    userId = user ? user.uid : null;
                         document.getElementById('login-screen').classList.remove('hidden');
                         document.getElementById('main-content').classList.add('hidden');
-                        document.getElementById('past-entries-container').innerHTML = ''; // Clear entries on sign out
+                    document.getElementById('past-entries-container').innerHTML = ''; // Clear entries
                     }
                 });
 
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
-                } 
+            } else if (!auth.currentUser) {
+                // Ensure the user is always authenticated, even if anonymously, if no token and not already logged in.
+                await signInAnonymously(auth);
+                }
                 
                 setupUI();
                 initializeSpeechRecognition();
@@ -352,6 +371,8 @@
         async function signOutUser() {
             try {
                 await signOut(auth);
+            // After signing out, onAuthStateChanged will trigger and handle the UI update.
+            // It will also sign in anonymously again if needed.
             } catch (error) {
                 console.error("Error signing out:", error);
             }
@@ -363,6 +384,9 @@
             document.getElementById('journal-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('sign-in-btn').addEventListener('click', signInWithGoogle);
             document.getElementById('sign-out-btn').addEventListener('click', signOutUser);
+            document.getElementById('ask-journal-btn').addEventListener('click', askJournal);
+            document.getElementById('reframe-challenge-btn').addEventListener('click', reframeChallenge);
+
             document.querySelectorAll('.ai-tool-btn').forEach(btn => {
                 btn.classList.add('w-full', 'inline-flex', 'justify-center', 'items-center', 'py-2', 'px-3', 'border', 'border-stone-200', 'shadow-sm', 'text-sm', 'font-medium', 'rounded-md', 'text-stone-700', 'bg-white', 'hover:bg-stone-50', 'transition-colors');
             });
@@ -400,7 +424,11 @@
         // --- Firestore Logic ---
         async function handleFormSubmit(e) {
             e.preventDefault();
-            if (!userId) { alert("Error: You are not signed in. Please refresh the page."); return; }
+        if (!userId) {
+            console.error("User not signed in.");
+            alert("Error: You are not signed in. Please refresh the page.");
+            return;
+        }
             const entryData = {
                 stateAndFocus: document.getElementById('state-and-focus').value.trim(),
                 progressMade: document.getElementById('progress-made').value.trim(),
@@ -408,7 +436,11 @@
                 newStandard: document.getElementById('new-standard').value.trim(),
                 createdAt: serverTimestamp()
             };
-            if (!entryData.stateAndFocus) { alert("The 'State and Focus' field cannot be empty."); return; }
+        if (!entryData.stateAndFocus) {
+            console.warn("The 'State and Focus' field cannot be empty.");
+            alert("The 'State and Focus' field cannot be empty.");
+            return;
+        }
             try {
                 const collectionPath = `artifacts/${appId}/users/${userId}/entries`;
                 await addDoc(collection(db, collectionPath), entryData);
@@ -419,15 +451,15 @@
             }
         }
 
-        function loadEntries() {
-            if (!userId) return;
-            const collectionPath = `artifacts/${appId}/users/${userId}/entries`;
+    function loadEntries(currentUid) {
+        if (!currentUid) return;
+        const collectionPath = `artifacts/${appId}/users/${currentUid}/entries`;
             const entriesQuery = query(collection(db, collectionPath), orderBy('createdAt', 'desc'));
             const container = document.getElementById('past-entries-container');
             const loadingState = document.getElementById('loading-state');
             const noEntriesMessage = document.getElementById('no-entries-message');
 
-            onSnapshot(entriesQuery, (snapshot) => {
+        entriesUnsubscribe = onSnapshot(entriesQuery, (snapshot) => {
                 loadingState.style.display = 'none';
                 container.innerHTML = ''; // Clear previous entries
                 allEntries = snapshot.docs.map(doc => doc.data());
@@ -1044,9 +1076,9 @@
             }
         }
 
-        async function loadSettings() {
-            if (!userId) return;
-            const settingsRef = doc(db, `artifacts/${appId}/users/${userId}/settings/preferences`);
+    async function loadSettings(currentUid) {
+        if (!currentUid) return;
+        const settingsRef = doc(db, `artifacts/${appId}/users/${currentUid}/settings/preferences`);
             try {
                 const docSnap = await getDoc(settingsRef);
                 if (docSnap.exists()) {
