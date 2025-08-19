@@ -5,228 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Momentum Journal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- jsPDF and html2canvas for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
+            background-color: #FDFBF8; /* Soft cream background */
+            color: #4B4B4B; /* Warm dark gray for text */
         }
         .journal-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .journal-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
         }
         /* Custom scrollbar for a cleaner look */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #FDFBF8;
         }
         ::-webkit-scrollbar-thumb {
-            background: #888;
+            background: #D4AF37; /* Golden scrollbar */
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #C09B2D;
         }
         /* AI Modal styles */
         #ai-modal, #settings-modal {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        /* Mood Visualizer Styles */
-        .mood-block {
-            position: relative;
-            height: 50px;
-            transition: transform 0.2s ease;
-        }
-        .mood-block:hover {
-            transform: scale(1.1);
-            z-index: 10;
-        }
-        .mood-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-        }
-        .mood-block:hover .mood-tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-        #speak-btn.loading {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background-color: rgba(0, 0, 0, 0.4);
         }
         /* Microphone button styles */
         .mic-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 9999px;
-            padding: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 12px;
+            color: #A0A0A0;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
         }
         .mic-btn:hover {
-            background-color: #e5e7eb;
+            color: #D4AF37;
         }
         .mic-btn.is-listening {
-            background-color: #ef4444;
-            color: white;
+            color: #D4AF37;
             animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.1); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+            color: #333;
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-stone-800">
 
     <div id="app-container" class="min-h-screen p-4 sm:p-6 lg:p-8">
         <!-- Login Screen -->
-        <div id="login-screen" class="max-w-md mx-auto text-center mt-20 bg-white p-8 rounded-2xl shadow-lg">
-            <h1 class="text-3xl font-bold text-gray-900">Welcome to Your Journal</h1>
-            <p class="mt-2 text-gray-600">Sign in to continue your journey from any device.</p>
-            <button id="sign-in-btn" class="mt-8 inline-flex items-center justify-center w-full py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C44.598,32.331,48,25.474,48,24C48,22.659,47.862,21.35,47.611,20.083z"/></svg>
+        <div id="login-screen" class="max-w-md mx-auto text-center mt-20 bg-white p-10 rounded-xl shadow-sm">
+            <h1 class="text-3xl font-light text-stone-800">Welcome to Your Journal</h1>
+            <p class="mt-2 text-stone-500">Sign in to continue your journey from any device.</p>
+            <button id="sign-in-btn" class="mt-8 inline-flex items-center justify-center w-full py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
+                <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C44.598,32.331,48,25.474,48,24C48,22.659,47.862,21.35,47.611,20.083z"/></svg>
                 Sign in with Google
             </button>
         </div>
 
         <!-- Main App Content (hidden by default) -->
         <div id="main-content" class="hidden">
-            <header class="mb-8 text-center relative">
-                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900">Daily Momentum Journal</h1>
-                <p class="mt-2 text-lg text-gray-600">Take command of your focus and create forward momentum.</p>
-                <div id="auth-info" class="mt-4 text-sm text-gray-500 bg-white p-2 rounded-lg inline-flex items-center gap-4 shadow-sm">
-                    <span id="user-id-display">Loading user ID...</span>
-                    <button id="sign-out-btn" class="text-xs bg-red-500 text-white font-semibold py-1 px-3 rounded-full hover:bg-red-600 transition-colors">Sign Out</button>
+            <header class="mb-12 text-center relative">
+                <h1 class="text-4xl sm:text-5xl font-light text-stone-800">Daily Momentum</h1>
+                <p class="mt-2 text-lg text-stone-500">Your space for reflection and growth.</p>
+                <div id="auth-info" class="mt-4 text-sm text-stone-600 bg-white/60 p-2 rounded-lg inline-flex items-center gap-4 shadow-sm">
+                    <span id="user-id-display">Loading...</span>
+                    <button id="sign-out-btn" class="text-xs bg-stone-200 text-stone-700 font-semibold py-1 px-3 rounded-full hover:bg-stone-300 transition-colors">Sign Out</button>
                 </div>
-                <button id="settings-btn" class="absolute top-0 right-0 text-2xl p-2 hover:bg-gray-200 rounded-full transition-colors">⚙️</button>
+                <button id="settings-btn" class="absolute top-0 right-0 text-2xl p-2 text-stone-400 hover:text-amber-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Left Side: Form for new entry -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-bold">Today's Commitment: <span id="current-date"></span></h2>
-                        <button id="inspire-me-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                           ✨ Inspire Me
-                        </button>
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-stone-700">Today's Reflection: <span id="current-date" class="font-normal text-stone-500"></span></h2>
                     </div>
                     <form id="journal-form">
                         <div class="space-y-6">
                             <div class="relative">
-                                <label for="state-and-focus" class="block text-md font-medium text-gray-700">What State am I in, and What am I Choosing to Focus On?</label>
-                                <textarea id="state-and-focus" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <label for="state-and-focus" class="block text-md font-medium text-stone-600 mb-1">My State & Focus</label>
+                                <textarea id="state-and-focus" rows="4" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50"></textarea>
                                 <button type="button" class="mic-btn" data-target="state-and-focus" title="Speak your entry">🎤</button>
                             </div>
                             <div class="relative">
-                                <label for="progress-made" class="block text-md font-medium text-gray-700">What Progress Did I Make Today? (No matter how small!)</label>
-                                <textarea id="progress-made" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <label for="progress-made" class="block text-md font-medium text-stone-600 mb-1">My Progress</label>
+                                <textarea id="progress-made" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50"></textarea>
                                 <button type="button" class="mic-btn" data-target="progress-made" title="Speak your entry">🎤</button>
                             </div>
                             <div class="relative">
                                 <div class="flex justify-between items-center">
-                                    <label for="challenge-and-gift" class="block text-md font-medium text-gray-700">What Was Today's Challenge, and What is the Gift Within It?</label>
-                                    <button type="button" id="reframe-challenge-btn" title="Reframe this challenge as a growth opportunity" class="text-indigo-600 hover:text-indigo-800 text-lg font-bold">✨</button>
+                                    <label for="challenge-and-gift" class="block text-md font-medium text-stone-600 mb-1">The Challenge & The Gift Within</label>
+                                    <button type="button" id="reframe-challenge-btn" title="Reframe this challenge" class="text-amber-500 hover:text-amber-600 text-sm font-semibold">✨ Reframe</button>
                                 </div>
-                                <textarea id="challenge-and-gift" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <textarea id="challenge-and-gift" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50"></textarea>
                                 <button type="button" class="mic-btn" data-target="challenge-and-gift" title="Speak your entry">🎤</button>
                             </div>
                             <div class="relative">
-                                <label for="new-standard" class="block text-md font-medium text-gray-700">What is the New Standard I'm Committing To NOW?</label>
-                                <textarea id="new-standard" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 pr-12"></textarea>
+                                <label for="new-standard" class="block text-md font-medium text-stone-600 mb-1">My New Standard</label>
+                                <textarea id="new-standard" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50"></textarea>
                                 <button type="button" class="mic-btn" data-target="new-standard" title="Speak your entry">🎤</button>
                             </div>
                         </div>
-                        <div class="mt-8 flex justify-between items-center">
-                             <button type="button" id="suggest-focus-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors">
-                                ✨ Suggest a Focus
-                            </button>
-                            <button type="submit" class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                                Save Today's Entry
+                        <div class="mt-8 flex justify-end">
+                            <button type="submit" class="inline-flex justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
+                                Save Entry
                             </button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Right Side: Past entries -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg flex flex-col">
-                    <div class="flex justify-between items-center mb-4 gap-2 flex-wrap">
-                        <h2 class="text-2xl font-bold">My Journey So Far</h2>
-                        <div class="flex gap-2 flex-wrap">
-                           <button id="visualize-journey-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-400 transition-colors">
-                               ✨ Visualize Journey
-                            </button>
-                            <button id="weekly-summary-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
-                               ✨ Get Weekly Summary
-                            </button>
-                        </div>
+                <div class="bg-white p-8 rounded-xl shadow-sm flex flex-col">
+                    <div class="flex justify-between items-center mb-6 gap-2 flex-wrap">
+                        <h2 class="text-2xl font-semibold text-stone-700">My Journey</h2>
                     </div>
-                    <div class="flex-grow max-h-[40vh] overflow-y-auto pr-2">
+                    <div class="flex-grow max-h-[40vh] overflow-y-auto pr-2 -mr-2">
                         <div id="loading-state" class="text-center py-10">
-                            <p class="text-gray-500">Loading your entries...</p>
+                            <p class="text-stone-500">Loading your entries...</p>
                         </div>
                          <div id="no-entries-message" class="text-center py-10 hidden">
-                            <p class="text-gray-500">You haven't written any entries yet. Fill out the form to begin your journey!</p>
+                            <p class="text-stone-500">Your journal is a blank canvas. Start your story.</p>
                         </div>
                         <div id="past-entries-container" class="space-y-6">
                             <!-- Entries will be loaded here -->
                         </div>
                     </div>
                     <!-- AI Tools Section -->
-                    <div class="mt-6 border-t pt-6 space-y-4">
+                    <div class="mt-6 border-t border-stone-200 pt-6 space-y-4">
                          <div>
-                             <h3 class="text-xl font-bold mb-3">❓ Ask Your Journal</h3>
+                             <h3 class="text-xl font-semibold text-stone-700 mb-3">AI Insights</h3>
                              <div class="flex gap-2">
-                                 <input type="text" id="ask-journal-input" class="flex-grow block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2" placeholder="e.g., What made me happy last week?">
-                                 <button id="ask-journal-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Ask</button>
+                                 <input type="text" id="ask-journal-input" class="flex-grow block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-2 bg-stone-50/50" placeholder="Ask your journal anything...">
+                                 <button id="ask-journal-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-stone-700 hover:bg-stone-800">Ask</button>
                              </div>
                          </div>
-                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                             <button id="discover-values-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-800">✨ Core Values</button>
-                             <button id="uncover-strengths-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700">✨ My Strengths</button>
-                             <button id="set-goal-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700">✨ Set a Goal</button>
-                             <button id="generate-affirmation-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700">✨ Affirmation</button>
-                             <button id="check-blindspots-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">✨ Blind Spots</button>
-                             <button id="future-self-letter-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600">✨ Future Self</button>
-                             <button id="dream-interpreter-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-slate-500 hover:bg-slate-600">✨ Dream Interpreter</button>
-                             <button id="create-meditation-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-500 hover:bg-emerald-600">✨ Create Meditation</button>
-                             <button id="stoic-wisdom-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-stone-500 hover:bg-stone-600">✨ Stoic Wisdom</button>
-                             <button id="check-thinking-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-500 hover:bg-rose-600">✨ Check Thinking</button>
-                             <button id="action-plan-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-500 hover:bg-sky-600">✨ Action Plan</button>
-                             <button id="find-metaphor-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600">✨ Find Metaphor</button>
-                             <button id="name-gremlin-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-fuchsia-600 hover:bg-fuchsia-700">✨ Name Gremlin</button>
-                             <button id="socratic-guide-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-lime-600 hover:bg-lime-700">✨ Socratic Guide</button>
-                             <button id="heros-journey-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700">✨ Hero's Journey</button>
-                             <button id="saboteur-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700">✨ Saboteur ID</button>
-                             <button id="visualize-future-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-rose-700 hover:bg-rose-800">✨ Visualize Future</button>
-                             <button id="meet-parts-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600">✨ Meet Your Parts</button>
-                             <button id="unhook-thoughts-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600">✨ Unhook Thought</button>
-                             <button id="six-perspectives-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-500 hover:bg-gray-600">✨ 6 Perspectives</button>
-                             <button id="connect-dots-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-500">✨ Connect Dots</button>
-                             <button id="role-model-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-pink-400 hover:bg-pink-500">✨ Role Model</button>
-                             <button id="gratitude-amplifier-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-400 hover:bg-green-500">✨ Amplify Gratitude</button>
-                             <button id="reauthor-past-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-400 hover:bg-red-500">✨ Re-author Past</button>
-                             <button id="uncover-archetype-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-400 hover:bg-purple-500">✨ Uncover Archetype</button>
-                             <button id="future-self-dialogue-btn" class="w-full inline-flex justify-center items-center py-2 px-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-400 hover:bg-cyan-500">✨ Future Self Q&A</button>
+                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            <button id="weekly-summary-btn" class="ai-tool-btn">✨ Weekly Summary</button>
+                            <button id="discover-values-btn" class="ai-tool-btn">✨ Core Values</button>
+                            <button id="uncover-strengths-btn" class="ai-tool-btn">✨ My Strengths</button>
+                            <button id="set-goal-btn" class="ai-tool-btn">✨ Set a Goal</button>
+                            <button id="generate-affirmation-btn" class="ai-tool-btn">✨ Affirmation</button>
+                            <button id="check-blindspots-btn" class="ai-tool-btn">✨ Blind Spots</button>
+                            <button id="future-self-letter-btn" class="ai-tool-btn">✨ Future Self</button>
+                            <button id="dream-interpreter-btn" class="ai-tool-btn">✨ Dream Interpreter</button>
+                            <button id="create-meditation-btn" class="ai-tool-btn">✨ Create Meditation</button>
+                            <button id="stoic-wisdom-btn" class="ai-tool-btn">✨ Stoic Wisdom</button>
+                            <button id="check-thinking-btn" class="ai-tool-btn">✨ Check Thinking</button>
+                            <button id="action-plan-btn" class="ai-tool-btn">✨ Action Plan</button>
+                            <button id="find-metaphor-btn" class="ai-tool-btn">✨ Find Metaphor</button>
+                            <button id="name-gremlin-btn" class="ai-tool-btn">✨ Name Gremlin</button>
+                            <button id="socratic-guide-btn" class="ai-tool-btn">✨ Socratic Guide</button>
+                            <button id="heros-journey-btn" class="ai-tool-btn">✨ Hero's Journey</button>
+                            <button id="saboteur-btn" class="ai-tool-btn">✨ Saboteur ID</button>
+                            <button id="visualize-future-btn" class="ai-tool-btn">✨ Visualize Future</button>
+                            <button id="meet-parts-btn" class="ai-tool-btn">✨ Meet Your Parts</button>
+                            <button id="unhook-thoughts-btn" class="ai-tool-btn">✨ Unhook Thought</button>
+                            <button id="six-perspectives-btn" class="ai-tool-btn">✨ 6 Perspectives</button>
+                            <button id="connect-dots-btn" class="ai-tool-btn">✨ Connect Dots</button>
+                            <button id="role-model-btn" class="ai-tool-btn">✨ Role Model</button>
+                            <button id="gratitude-amplifier-btn" class="ai-tool-btn">✨ Amplify Gratitude</button>
+                            <button id="reauthor-past-btn" class="ai-tool-btn">✨ Re-author Past</button>
+                            <button id="uncover-archetype-btn" class="ai-tool-btn">✨ Uncover Archetype</button>
+                            <button id="future-self-dialogue-btn" class="ai-tool-btn">✨ Future Self Q&A</button>
                          </div>
                     </div>
                 </div>
@@ -236,17 +196,17 @@
     
     <!-- AI Modal -->
     <div id="ai-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 transition-opacity duration-300" onclick="closeAiModal()">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 transform transition-all duration-300 scale-95" onclick="event.stopPropagation()">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 transform transition-all duration-300 scale-95" onclick="event.stopPropagation()">
             <div class="flex justify-between items-start mb-4">
-                <h3 id="ai-modal-title" class="text-2xl font-bold">AI Insights</h3>
-                <button id="speak-btn" class="hidden text-2xl p-2 -mt-2 -mr-2 hover:bg-gray-200 rounded-full transition-colors">🔊</button>
+                <h3 id="ai-modal-title" class="text-2xl font-semibold text-stone-800">AI Insights</h3>
+                <button id="speak-btn" class="hidden text-2xl p-2 -mt-2 -mr-2 text-stone-500 hover:bg-stone-100 rounded-full transition-colors">🔊</button>
             </div>
-            <div id="ai-response-container" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 text-gray-700">
+            <div id="ai-response-container" class="prose max-w-none space-y-4 max-h-[60vh] overflow-y-auto pr-4 text-stone-700">
                 <!-- AI response will be injected here -->
             </div>
             <div id="ai-modal-footer" class="mt-6 text-right space-x-2">
                  <!-- Export buttons will be added here dynamically -->
-                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
                     Close
                 </button>
             </div>
@@ -255,12 +215,12 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeSettingsModal()">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8" onclick="event.stopPropagation()">
-            <h3 class="text-2xl font-bold mb-6">Personalize Your Journal</h3>
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8" onclick="event.stopPropagation()">
+            <h3 class="text-2xl font-semibold text-stone-800 mb-6">Personalize Your Journal</h3>
             <div class="space-y-6">
                 <div>
-                    <label for="age-group-select" class="block text-sm font-medium text-gray-700">Your Age Group</label>
-                    <select id="age-group-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <label for="age-group-select" class="block text-sm font-medium text-stone-700">Your Age Group</label>
+                    <select id="age-group-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
                         <option value="unspecified">Unspecified</option>
                         <option value="under-18">Under 18</option>
                         <option value="18-25">18-25</option>
@@ -270,8 +230,8 @@
                     </select>
                 </div>
                 <div>
-                    <label for="voice-select" class="block text-sm font-medium text-gray-700">AI Voice</label>
-                    <select id="voice-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <label for="voice-select" class="block text-sm font-medium text-stone-700">AI Voice</label>
+                    <select id="voice-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
                         <option value="Charon">Charon (Firm, Informative)</option>
                         <option value="Puck">Puck (Upbeat, Energetic)</option>
                         <option value="Zephyr">Zephyr (Bright, Clear)</option>
@@ -279,8 +239,8 @@
                     </select>
                 </div>
                  <div>
-                    <label for="language-select" class="block text-sm font-medium text-gray-700">Language</label>
-                    <select id="language-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <label for="language-select" class="block text-sm font-medium text-stone-700">Language</label>
+                    <select id="language-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
                         <option value="English">English</option>
                         <option value="Spanish">Español</option>
                         <option value="French">Français</option>
@@ -294,18 +254,18 @@
                 <!-- Auto-Speak Toggle -->
                 <div class="flex items-center justify-between pt-2">
                     <span class="flex-grow flex flex-col">
-                        <span class="text-sm font-medium text-gray-900">Auto-Speak Insights</span>
-                        <span class="text-sm text-gray-500">Automatically read AI responses aloud.</span>
+                        <span class="text-sm font-medium text-stone-900">Auto-Speak Insights</span>
+                        <span class="text-sm text-stone-500">Automatically read AI responses aloud.</span>
                     </span>
                     <label for="autospeak-toggle" class="inline-flex relative items-center cursor-pointer">
                         <input type="checkbox" value="" id="autospeak-toggle" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 dark:peer-focus:ring-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        <div class="w-11 h-6 bg-stone-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-amber-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                 </div>
             </div>
             <div class="mt-8 flex justify-end gap-4">
-                <button onclick="closeSettingsModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
-                <button id="save-settings-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                <button onclick="closeSettingsModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
+                <button id="save-settings-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-500 hover:bg-amber-600">Save</button>
             </div>
         </div>
     </div>
@@ -394,22 +354,18 @@
             document.getElementById('journal-form').addEventListener('submit', handleFormSubmit);
             document.getElementById('sign-in-btn').addEventListener('click', signInWithGoogle);
             document.getElementById('sign-out-btn').addEventListener('click', signOutUser);
+            document.querySelectorAll('.ai-tool-btn').forEach(btn => {
+                btn.classList.add('w-full', 'inline-flex', 'justify-center', 'items-center', 'py-2', 'px-3', 'border', 'border-stone-200', 'shadow-sm', 'text-sm', 'font-medium', 'rounded-md', 'text-stone-700', 'bg-white', 'hover:bg-stone-50', 'transition-colors');
+            });
             document.getElementById('weekly-summary-btn').addEventListener('click', getWeeklySummary);
-            document.getElementById('suggest-focus-btn').addEventListener('click', getTodayFocus);
-            document.getElementById('inspire-me-btn').addEventListener('click', getInspirationalPrompt);
-            document.getElementById('ask-journal-btn').addEventListener('click', askJournal);
-            document.getElementById('visualize-journey-btn').addEventListener('click', visualizeJourney);
             document.getElementById('discover-values-btn').addEventListener('click', discoverCoreValues);
-            document.getElementById('reframe-challenge-btn').addEventListener('click', reframeChallenge);
-            document.getElementById('set-goal-btn').addEventListener('click', setNewGoal);
             document.getElementById('uncover-strengths-btn').addEventListener('click', uncoverStrengths);
+            document.getElementById('set-goal-btn').addEventListener('click', setNewGoal);
             document.getElementById('generate-affirmation-btn').addEventListener('click', generateAffirmation);
             document.getElementById('check-blindspots-btn').addEventListener('click', checkBlindSpots);
             document.getElementById('future-self-letter-btn').addEventListener('click', letterFromFutureSelf);
             document.getElementById('dream-interpreter-btn').addEventListener('click', openDreamModal);
             document.getElementById('create-meditation-btn').addEventListener('click', createMeditation);
-            document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
-            document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
             document.getElementById('stoic-wisdom-btn').addEventListener('click', getStoicWisdom);
             document.getElementById('check-thinking-btn').addEventListener('click', checkCognitiveDistortions);
             document.getElementById('action-plan-btn').addEventListener('click', createActionPlan);
@@ -428,6 +384,8 @@
             document.getElementById('reauthor-past-btn').addEventListener('click', reauthorPast);
             document.getElementById('uncover-archetype-btn').addEventListener('click', uncoverArchetype);
             document.getElementById('future-self-dialogue-btn').addEventListener('click', openFutureSelfDialogueModal);
+            document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
+            document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
         }
 
         // --- Firestore Logic ---
@@ -479,9 +437,9 @@
 
         function createEntryCard(entry) {
             const card = document.createElement('div');
-            card.className = 'journal-card bg-gray-50 p-5 rounded-lg border border-gray-200';
+            card.className = 'journal-card bg-stone-50/50 p-5 rounded-lg border border-stone-200';
             const date = entry.createdAt ? entry.createdAt.toDate().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date not available';
-            card.innerHTML = `<div class="flex justify-between items-start"><p class="text-sm font-semibold text-indigo-600">${date}</p><button class="get-ai-insights-btn text-xs bg-indigo-100 text-indigo-700 font-semibold py-1 px-3 rounded-full hover:bg-indigo-200 transition-colors">✨ Get Insights</button></div><div class="mt-3 space-y-4"><div><h4 class="font-bold">My State & Focus:</h4><p class="text-gray-700 whitespace-pre-wrap">${entry.stateAndFocus||'N/A'}</p></div>${entry.progressMade?`<div><h4 class="font-bold text-green-600">My Progress:</h4><p class="text-gray-700 whitespace-pre-wrap">${entry.progressMade}</p></div>`:''}${entry.challengeAndGift?`<div><h4 class="font-bold text-red-600">Challenge & Gift:</h4><p class="text-gray-700 whitespace-pre-wrap">${entry.challengeAndGift}</p></div>`:''}${entry.newStandard?`<div><h4 class="font-bold text-blue-600">My New Standard:</h4><p class="text-gray-700 whitespace-pre-wrap">${entry.newStandard}</p></div>`:''}</div>`;
+            card.innerHTML = `<div class="flex justify-between items-start"><p class="text-sm font-semibold text-amber-600">${date}</p><button class="get-ai-insights-btn text-xs bg-amber-100 text-amber-800 font-semibold py-1 px-3 rounded-full hover:bg-amber-200 transition-colors">✨ Get Insights</button></div><div class="mt-3 space-y-4 text-sm"><div><h4 class="font-semibold text-stone-700">My State & Focus:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.stateAndFocus||'N/A'}</p></div>${entry.progressMade?`<div><h4 class="font-semibold text-stone-700">My Progress:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.progressMade}</p></div>`:''}${entry.challengeAndGift?`<div><h4 class="font-semibold text-stone-700">Challenge & Gift:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.challengeAndGift}</p></div>`:''}${entry.newStandard?`<div><h4 class="font-semibold text-stone-700">My New Standard:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.newStandard}</p></div>`:''}</div>`;
             card.querySelector('.get-ai-insights-btn').addEventListener('click', () => getSingleEntryInsights(entry));
             return card;
         }
@@ -575,8 +533,8 @@
         function renderMoodVisualizer(data) {
             const container = document.getElementById('ai-response-container');
             const sentimentColors = { "Empowered": "bg-green-500", "Growth-Oriented": "bg-blue-500", "Neutral": "bg-gray-400", "Breakthrough": "bg-purple-500", "Struggling": "bg-red-500" };
-            let visualizerHtml = `<div class="flex border border-gray-200 rounded-lg p-2 gap-px">${data.map(item => `<div class="mood-block flex-1 ${sentimentColors[item.sentiment] || 'bg-gray-300'} rounded-sm"><div class="mood-tooltip bg-gray-800 text-white text-xs rounded py-1 px-2 shadow-lg"><strong>${item.date}</strong>: ${item.reason}</div></div>`).join('')}</div>`;
-            visualizerHtml += `<div class="mt-4 text-xs text-gray-600">A visualization of your last ${data.length} entries, from oldest (left) to newest (right). Hover over a block for details.</div>`;
+            let visualizerHtml = `<div class="flex border border-stone-200 rounded-lg p-2 gap-px">${data.map(item => `<div class="mood-block flex-1 ${sentimentColors[item.sentiment] || 'bg-gray-300'} rounded-sm"><div class="mood-tooltip bg-stone-800 text-white text-xs rounded py-1 px-2 shadow-lg"><strong>${item.date}</strong>: ${item.reason}</div></div>`).join('')}</div>`;
+            visualizerHtml += `<div class="mt-4 text-xs text-stone-600">A visualization of your last ${data.length} entries, from oldest (left) to newest (right). Hover over a block for details.</div>`;
             container.innerHTML = visualizerHtml;
         }
 
@@ -644,7 +602,7 @@
             if (!dreamText) { alert("Please describe your dream first."); return; }
             const prompt = `Act as a thoughtful dream interpreter. Analyze the following dream description. Provide a possible interpretation based on common archetypes and symbols (e.g., Jungian concepts), but clearly state that dream interpretation is subjective and this is just one perspective. Explore the potential emotions and themes present in the dream. Format using markdown.\n\nDream: "${dreamText}"`;
             updateModalContent("<p>Interpreting your dream...</p>");
-            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Close</button>`;
+            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>`;
             try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t interpret your dream. Please try again.</p>'); }
         }
 
@@ -857,7 +815,7 @@
             if (currentAudio && !currentAudio.paused) {
                 currentAudio.pause();
                 currentAudio = null;
-                document.getElementById('speak-btn').textContent = '�';
+                document.getElementById('speak-btn').textContent = '🔊';
                 return;
             }
             const speakBtn = document.getElementById('speak-btn');
@@ -931,12 +889,12 @@
             const responseContainer = document.getElementById('ai-response-container');
             const modalFooter = document.getElementById('ai-modal-footer');
             responseContainer.innerHTML = `
-                <p class="text-sm text-gray-600 mb-4">Describe your dream in as much detail as you can remember. The AI will offer a possible interpretation.</p>
-                <textarea id="dream-input" rows="8" class="w-full rounded-md border-gray-300 shadow-sm p-3"></textarea>
+                <p class="text-sm text-stone-600 mb-4">Describe your dream in as much detail as you can remember. The AI will offer a possible interpretation.</p>
+                <textarea id="dream-input" rows="8" class="w-full rounded-md border-stone-300 shadow-sm p-3"></textarea>
             `;
             modalFooter.innerHTML = `
                 <button id="submit-dream-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700">Interpret Dream</button>
-                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
             `;
             document.getElementById('submit-dream-btn').addEventListener('click', interpretDream);
         }
@@ -951,12 +909,12 @@
             const responseContainer = document.getElementById('ai-response-container');
             const modalFooter = document.getElementById('ai-modal-footer');
             responseContainer.innerHTML = `
-                <p class="text-sm text-gray-600 mb-4">Whose mindset would you like to channel for your current challenge? This could be anyone—a historical figure, a mentor, an author, a fictional character.</p>
-                <input type="text" id="role-model-input" class="w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="e.g., Marcus Aurelius, a wise old owl, my grandfather">
+                <p class="text-sm text-stone-600 mb-4">Whose mindset would you like to channel for your current challenge? This could be anyone—a historical figure, a mentor, an author, a fictional character.</p>
+                <input type="text" id="role-model-input" class="w-full rounded-md border-stone-300 shadow-sm p-3" placeholder="e.g., Marcus Aurelius, a wise old owl, my grandfather">
             `;
             modalFooter.innerHTML = `
                 <button id="submit-role-model-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-500 hover:bg-pink-600">Get Perspective</button>
-                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
             `;
             document.getElementById('submit-role-model-btn').addEventListener('click', () => {
                 const roleModel = document.getElementById('role-model-input').value.trim();
@@ -977,12 +935,12 @@
             const responseContainer = document.getElementById('ai-response-container');
             const modalFooter = document.getElementById('ai-modal-footer');
             responseContainer.innerHTML = `
-                <p class="text-sm text-gray-600 mb-4">Ask your wise Future Self a question about a current challenge or uncertainty. They have the benefit of hindsight and want to see you succeed.</p>
-                <textarea id="future-self-q-input" rows="4" class="w-full rounded-md border-gray-300 shadow-sm p-3" placeholder="e.g., What's the most important thing for me to remember as I navigate this career change?"></textarea>
+                <p class="text-sm text-stone-600 mb-4">Ask your wise Future Self a question about a current challenge or uncertainty. They have the benefit of hindsight and want to see you succeed.</p>
+                <textarea id="future-self-q-input" rows="4" class="w-full rounded-md border-stone-300 shadow-sm p-3" placeholder="e.g., What's the most important thing for me to remember as I navigate this career change?"></textarea>
             `;
             modalFooter.innerHTML = `
                 <button id="submit-future-self-q-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-600">Ask Your Future Self</button>
-                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
             `;
             document.getElementById('submit-future-self-q-btn').addEventListener('click', () => {
                 const question = document.getElementById('future-self-q-input').value.trim();
@@ -999,7 +957,7 @@
             document.getElementById('ai-modal-title').textContent = title;
             document.getElementById('ai-response-container').innerHTML = `<p>${loadingMessage}</p>`;
             document.getElementById('speak-btn').classList.add('hidden');
-            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Close</button>`;
+            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>`;
             modal.style.display = 'flex';
             setTimeout(() => { modal.classList.add('opacity-100'); modal.querySelector('div > div').classList.add('scale-100'); }, 10);
         }
@@ -1022,9 +980,9 @@
             // Add export buttons after content is loaded
             const footer = document.getElementById('ai-modal-footer');
             footer.innerHTML = `
-                <button id="export-pdf-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">Save as PDF</button>
-                <button id="export-txt-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700">Save as Text</button>
-                <button onclick="closeAiModal()" class="py-2 px-5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Close</button>
+                <button id="export-pdf-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-500 hover:bg-amber-600">Save as PDF</button>
+                <button id="export-txt-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-stone-600 hover:bg-stone-700">Save as Text</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>
             `;
             document.getElementById('export-pdf-btn').addEventListener('click', exportAiInsightToPdf);
             document.getElementById('export-txt-btn').addEventListener('click', exportAiInsightToTxt);
