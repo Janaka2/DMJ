@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Momentum Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- jsPDF and html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Soft cream background */
+            color: #4B4B4B; /* Warm dark gray for text */
+        }
+        .journal-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .journal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.08);
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37; /* Golden scrollbar */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C09B2D;
+        }
+        /* AI Modal styles */
+        #ai-modal, #settings-modal {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        /* Microphone button styles */
+        .mic-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 12px;
+            color: #A0A0A0;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .mic-btn:hover {
+            color: #D4AF37;
+        }
+        .mic-btn.is-listening {
+            color: #D4AF37;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.1); }
+            100% { transform: translateY(-50%) scale(1); }
+        }
+        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+            color: #333;
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <div id="app-container" class="min-h-screen p-4 sm:p-6 lg:p-8">
+        <!-- Login Screen -->
+        <div id="login-screen" class="max-w-md mx-auto text-center mt-20 bg-white p-10 rounded-xl shadow-sm">
+            <h1 class="text-3xl font-light text-stone-800">Welcome to 🌟Your Hero Journal – Daily Adventure Log</h1>
+            <p class="mt-2 text-stone-500">Sign in to continue your journey from any device.</p>
+            <button id="sign-in-btn" class="mt-8 inline-flex items-center justify-center w-full py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
+                <svg class="w-5 h-5 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48px" height="48px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C44.598,32.331,48,25.474,48,24C48,22.659,47.862,21.35,47.611,20.083z"/></svg>
+                Sign in with Google
+            </button>
+        </div>
+
+        <!-- Main App Content (hidden by default) -->
+        <div id="main-content" class="hidden">
+            <header class="mb-12 text-center relative">
+                <h1 class="text-4xl sm:text-5xl font-light text-stone-800">Daily Momentum : 🌟My Hero Journal</h1>
+                <p class="mt-2 text-lg text-stone-500">Your space for reflection and growth.</p>
+                <div id="auth-info" class="mt-4 text-sm text-stone-600 bg-white/60 p-2 rounded-lg inline-flex items-center gap-4 shadow-sm">
+                    <span id="user-id-display">Loading...</span>
+                    <button id="sign-out-btn" class="text-xs bg-stone-200 text-stone-700 font-semibold py-1 px-3 rounded-full hover:bg-stone-300 transition-colors">Sign Out</button>
+                </div>
+                <button id="settings-btn" class="absolute top-0 right-0 text-2xl p-2 text-stone-400 hover:text-amber-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Side: Form for new entry -->
+                <div class="bg-white p-8 rounded-xl shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-stone-700">Today's Reflection: <span id="current-date" class="font-normal text-stone-500"></span></h2>
+                    </div>
+                    <form id="journal-form">
+                        <div class="space-y-6">
+                            <div class="relative">
+                                <label for="state-and-focus" class="block text-md font-medium text-stone-600 mb-1">My Power Mood & Super Focus ✨🦸‍♂️💪</label>
+                                <textarea id="state-and-focus" rows="4" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50" placeholder="Example: I feel excited, and I choose to focus on doing my best at school."></textarea>
+                                <button type="button" class="mic-btn" data-target="state-and-focus" title="Speak your entry">🎤</button>
+                            </div>
+                            <div class="relative">
+                                <label for="progress-made" class="block text-md font-medium text-stone-600 mb-1">My Victory of the Day 🏆⭐</label>
+                                <textarea id="progress-made" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50" placeholder="Example: I did my homework, I made my bed, I finished a drawing, or I helped my friend."></textarea>
+                                <button type="button" class="mic-btn" data-target="progress-made" title="Speak your entry">🎤</button>
+                            </div>
+                            <div class="relative">
+                                <div class="flex justify-between items-center">
+                                    <label for="challenge-and-gift" class="block text-md font-medium text-stone-600 mb-1">My Challenge & Treasure 🐉⚔️💎</label>
+                                    <button type="button" id="reframe-challenge-btn" title="Reframe this challenge" class="text-amber-500 hover:text-amber-600 text-sm font-semibold">✨ Reframe</button>
+                                </div>
+                                <textarea id="challenge-and-gift" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50" placeholder="Example: Soccer practice was hard, but I learned I get stronger when I don’t give up."></textarea>
+                                <button type="button" class="mic-btn" data-target="challenge-and-gift" title="Speak your entry">🎤</button>
+                            </div>
+                            <div class="relative">
+                                <label for="new-standard" class="block text-md font-medium text-stone-600 mb-1">My New Hero Promise ⚡🔥🚀</label>
+                                <textarea id="new-standard" rows="3" class="mt-1 block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-3 pr-12 bg-stone-50/50" placeholder="Example: From now on, I’ll try to speak kindly even when I’m upset."></textarea>
+                                <button type="button" class="mic-btn" data-target="new-standard" title="Speak your entry">🎤</button>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button type="submit" class="inline-flex justify-center py-3 px-8 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors">
+                                Save Entry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side: Past entries -->
+                <div class="bg-white p-8 rounded-xl shadow-sm flex flex-col">
+                    <div class="flex justify-between items-center mb-6 gap-2 flex-wrap">
+                        <h2 class="text-2xl font-semibold text-stone-700">My Journey</h2>
+                    </div>
+                    <div class="flex-grow max-h-[40vh] overflow-y-auto pr-2 -mr-2">
+                        <div id="loading-state" class="text-center py-10">
+                            <p class="text-stone-500">Loading your entries...</p>
+                        </div>
+                         <div id="no-entries-message" class="text-center py-10 hidden">
+                            <p class="text-stone-500">Your journal is a blank canvas. Start your story.</p>
+                        </div>
+                        <div id="past-entries-container" class="space-y-6">
+                            <!-- Entries will be loaded here -->
+                        </div>
+                    </div>
+                    <!-- AI Tools Section -->
+                    <div class="mt-6 border-t border-stone-200 pt-6 space-y-4">
+                         <div>
+                             <h3 class="text-xl font-semibold text-stone-700 mb-3">AI Insights</h3>
+                             <div class="flex gap-2">
+                                 <input type="text" id="ask-journal-input" class="flex-grow block w-full rounded-md border-stone-200 shadow-sm focus:border-amber-400 focus:ring focus:ring-amber-300 focus:ring-opacity-50 sm:text-sm p-2 bg-stone-50/50" placeholder="Ask your journal anything...">
+                                 <button id="ask-journal-btn" class="inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-stone-700 hover:bg-stone-800">Ask</button>
+                             </div>
+                         </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                            <button id="weekly-summary-btn" class="ai-tool-btn">📝 My Week Story</button>
+                            <button id="discover-values-btn" class="ai-tool-btn">❤️ What Matters to Me</button>
+                            <button id="uncover-strengths-btn" class="ai-tool-btn">💪 My Superpowers</button>
+                            <button id="set-goal-btn" class="ai-tool-btn">🎯 My Next Mission</button>
+                            <button id="generate-affirmation-btn" class="ai-tool-btn">🌟 My Power Words</button>
+                            <button id="check-blindspots-btn" class="ai-tool-btn">👀 What I Don’t See</button>
+                            <button id="future-self-letter-btn" class="ai-tool-btn">🔮 Future Me</button>
+                            <button id="dream-interpreter-btn" class="ai-tool-btn">😴✨ What My Dream Means</button>
+                            <button id="create-meditation-btn" class="ai-tool-btn">🧘 Calm Time</button>
+                            <button id="stoic-wisdom-btn" class="ai-tool-btn">🦉 Wise Words</button>
+                            <button id="check-thinking-btn" class="ai-tool-btn">🤔 Thought Check</button>
+                            <button id="action-plan-btn" class="ai-tool-btn">🗺️ Hero Plan</button>
+                            <button id="find-metaphor-btn" class="ai-tool-btn">🐱➡️🦁 Fun Picture Idea</button>
+                            <button id="name-gremlin-btn" class="ai-tool-btn">👾 Name My Monster</button>
+                            <button id="socratic-guide-btn" class="ai-tool-btn">❓ Big Questions Game</button>
+                            <button id="heros-journey-btn" class="ai-tool-btn">🦸 My Hero Story</button>
+                            <button id="saboteur-btn" class="ai-tool-btn">🐉 Tricky Villain Finder</button>
+                            <button id="visualize-future-btn" class="ai-tool-btn">🚀 See My Future</button>
+                            <button id="meet-parts-btn" class="ai-tool-btn">🧩 Meet My Inside Team</button>
+                            <button id="unhook-thoughts-btn" class="ai-tool-btn">🎈 Let a Thought Go</button>
+                            <button id="six-perspectives-btn" class="ai-tool-btn">🔭 See in 6 Ways</button>
+                            <button id="connect-dots-btn" class="ai-tool-btn">🔗 Make the Links</button>
+                            <button id="role-model-btn" class="ai-tool-btn">🌟 My Hero Person</button>
+                            <button id="gratitude-amplifier-btn" class="ai-tool-btn">💖 Big Thank You</button>
+                            <button id="reauthor-past-btn" class="ai-tool-btn">📖 Change My Story</button>
+                            <button id="uncover-archetype-btn" class="ai-tool-btn">🎭 My Character Mask</button>
+                            <button id="future-self-dialogue-btn" class="ai-tool-btn">💌 Ask Future Me</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Modal -->
+    <div id="ai-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 transition-opacity duration-300" onclick="closeAiModal()">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-8 transform transition-all duration-300 scale-95" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4">
+                <h3 id="ai-modal-title" class="text-2xl font-semibold text-stone-800">AI Insights</h3>
+                <button id="speak-btn" class="hidden text-2xl p-2 -mt-2 -mr-2 text-stone-500 hover:bg-stone-100 rounded-full transition-colors">🔊</button>
+            </div>
+            <div id="ai-response-container" class="prose max-w-none space-y-4 max-h-[60vh] overflow-y-auto pr-4 text-stone-700">
+                <!-- AI response will be injected here -->
+            </div>
+            <div id="ai-modal-footer" class="mt-6 text-right space-x-2">
+                 <!-- Export buttons will be added here dynamically -->
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="closeSettingsModal()">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8" onclick="event.stopPropagation()">
+            <h3 class="text-2xl font-semibold text-stone-800 mb-6">Personalize Your Journal</h3>
+            <div class="space-y-6">
+                <div>
+                    <label for="age-group-select" class="block text-sm font-medium text-stone-700">Your Age Group</label>
+                    <select id="age-group-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
+                        <option value="unspecified">Unspecified</option>
+                        <option value="under-18">Under 18</option>
+                        <option value="18-25">18-25</option>
+                        <option value="26-40">26-40</option>
+                        <option value="41-60">41-60</option>
+                        <option value="60+">60+</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="voice-select" class="block text-sm font-medium text-stone-700">AI Voice</label>
+                    <select id="voice-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
+                        <option value="Charon">Charon (Firm, Informative)</option>
+                        <option value="Puck">Puck (Upbeat, Energetic)</option>
+                        <option value="Zephyr">Zephyr (Bright, Clear)</option>
+                        <option value="Kore">Kore (Firm, Confident)</option>
+                    </select>
+                </div>
+                 <div>
+                    <label for="language-select" class="block text-sm font-medium text-stone-700">Language</label>
+                    <select id="language-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-stone-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md">
+                        <option value="English">English</option>
+                        <option value="Spanish">Español</option>
+                        <option value="French">Français</option>
+                        <option value="German">Deutsch</option>
+                        <option value="Italian">Italiano</option>
+                        <option value="Portuguese">Português</option>
+                        <option value="Hindi">हिन्दी</option>
+                        <option value="Sinhala">සිංහල</option>
+                    </select>
+                </div>
+                <!-- Auto-Speak Toggle -->
+                <div class="flex items-center justify-between pt-2">
+                    <span class="flex-grow flex flex-col">
+                        <span class="text-sm font-medium text-stone-900">Auto-Speak Insights</span>
+                        <span class="text-sm text-stone-500">Automatically read AI responses aloud.</span>
+                    </span>
+                    <label for="autospeak-toggle" class="inline-flex relative items-center cursor-pointer">
+                        <input type="checkbox" value="" id="autospeak-toggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-stone-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-amber-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    </label>
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end gap-4">
+                <button onclick="closeSettingsModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
+                <button id="save-settings-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-500 hover:bg-amber-600">Save</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Firebase and App Logic -->
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-journal-app';
+        //const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+  apiKey: "AIzaSyBp-4EVbu0PhSqmbNr9sRbNuL3BohIq-UU",
+  authDomain: "my-momentum-journal.firebaseapp.com",
+  projectId: "my-momentum-journal",
+  storageBucket: "my-momentum-journal.firebasestorage.app",
+  messagingSenderId: "15658344765",
+  appId: "1:15658344765:web:330b28e81e71b8ff5d6554",
+  measurementId: "G-JKKBC64KES"
+};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId;
+        let allEntries = []; // Local cache of entries
+        let currentAudio = null; // To manage playing audio
+        let userSettings = { ageGroup: 'unspecified', voice: 'Charon', language: 'English', autoSpeak: false }; // Default settings
+        let entriesUnsubscribe = null; // To hold the listener cleanup function
+
+        // --- Speech Recognition ---
+        let recognition;
+        let isListening = false;
+        let activeTextarea = null;
+        let activeMicButton = null;
+
+        // --- App Initialization ---
+        async function initialize() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                onAuthStateChanged(auth, async (user) => {
+                // Always clean up the old listener when auth state changes
+                if (entriesUnsubscribe) {
+                    entriesUnsubscribe();
+                    entriesUnsubscribe = null;
+                }
+
+                if (user && !user.isAnonymous) {
+                    // This is a permanent user, signed in with Google or custom token.
+                        userId = user.uid;
+
+                    if (!user.displayName) {
+                        await user.reload();
+                    }
+
+                        document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
+
+                    await loadSettings(userId);
+                    loadEntries(userId); // Pass UID directly
+
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('main-content').classList.remove('hidden');
+                    } else {
+                    // User is anonymous, signed out, or null. Show the login screen.
+                    userId = user ? user.uid : null;
+                        document.getElementById('login-screen').classList.remove('hidden');
+                        document.getElementById('main-content').classList.add('hidden');
+                    document.getElementById('past-entries-container').innerHTML = ''; // Clear entries
+                    }
+                });
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+            } else if (!auth.currentUser) {
+                // Ensure the user is always authenticated, even if anonymously, if no token and not already logged in.
+                await signInAnonymously(auth);
+                }
+                
+                setupUI();
+                initializeSpeechRecognition();
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                document.getElementById('app-container').innerHTML = `<div class="text-center text-red-500 p-8"><h2>Oops! Something went wrong.</h2><p>Could not connect to the journal service. Please check the console for errors and try again later.</p><p class="mt-2 text-sm text-gray-600">${error.message}</p></div>`;
+            }
+        }
+        
+        // --- Authentication Functions ---
+        async function signInWithGoogle() {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Error signing in with Google:", error);
+            }
+        }
+
+        async function signOutUser() {
+            try {
+                await signOut(auth);
+            // After signing out, onAuthStateChanged will trigger and handle the UI update.
+            // It will also sign in anonymously again if needed.
+            } catch (error) {
+                console.error("Error signing out:", error);
+            }
+        }
+
+        // --- UI Setup ---
+        function setupUI() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('journal-form').addEventListener('submit', handleFormSubmit);
+            document.getElementById('sign-in-btn').addEventListener('click', signInWithGoogle);
+            document.getElementById('sign-out-btn').addEventListener('click', signOutUser);
+            document.getElementById('ask-journal-btn').addEventListener('click', askJournal);
+            document.getElementById('reframe-challenge-btn').addEventListener('click', reframeChallenge);
+
+            document.querySelectorAll('.ai-tool-btn').forEach(btn => {
+                btn.classList.add('w-full', 'inline-flex', 'justify-center', 'items-center', 'py-2', 'px-3', 'border', 'border-stone-200', 'shadow-sm', 'text-sm', 'font-medium', 'rounded-md', 'text-stone-700', 'bg-white', 'hover:bg-stone-50', 'transition-colors');
+            });
+            document.getElementById('weekly-summary-btn').addEventListener('click', getWeeklySummary);
+            document.getElementById('discover-values-btn').addEventListener('click', discoverCoreValues);
+            document.getElementById('uncover-strengths-btn').addEventListener('click', uncoverStrengths);
+            document.getElementById('set-goal-btn').addEventListener('click', setNewGoal);
+            document.getElementById('generate-affirmation-btn').addEventListener('click', generateAffirmation);
+            document.getElementById('check-blindspots-btn').addEventListener('click', checkBlindSpots);
+            document.getElementById('future-self-letter-btn').addEventListener('click', letterFromFutureSelf);
+            document.getElementById('dream-interpreter-btn').addEventListener('click', openDreamModal);
+            document.getElementById('create-meditation-btn').addEventListener('click', createMeditation);
+            document.getElementById('stoic-wisdom-btn').addEventListener('click', getStoicWisdom);
+            document.getElementById('check-thinking-btn').addEventListener('click', checkCognitiveDistortions);
+            document.getElementById('action-plan-btn').addEventListener('click', createActionPlan);
+            document.getElementById('find-metaphor-btn').addEventListener('click', findMetaphor);
+            document.getElementById('name-gremlin-btn').addEventListener('click', nameMyGremlin);
+            document.getElementById('socratic-guide-btn').addEventListener('click', socraticGuide);
+            document.getElementById('heros-journey-btn').addEventListener('click', reframeAsHerosJourney);
+            document.getElementById('saboteur-btn').addEventListener('click', identifySaboteur);
+            document.getElementById('visualize-future-btn').addEventListener('click', createFutureVisualization);
+            document.getElementById('meet-parts-btn').addEventListener('click', meetYourParts);
+            document.getElementById('unhook-thoughts-btn').addEventListener('click', unhookFromThoughts);
+            document.getElementById('six-perspectives-btn').addEventListener('click', getSixPerspectives);
+            document.getElementById('connect-dots-btn').addEventListener('click', connectTheDots);
+            document.getElementById('role-model-btn').addEventListener('click', openRoleModelModal);
+            document.getElementById('gratitude-amplifier-btn').addEventListener('click', amplifyGratitude);
+            document.getElementById('reauthor-past-btn').addEventListener('click', reauthorPast);
+            document.getElementById('uncover-archetype-btn').addEventListener('click', uncoverArchetype);
+            document.getElementById('future-self-dialogue-btn').addEventListener('click', openFutureSelfDialogueModal);
+            document.getElementById('settings-btn').addEventListener('click', openSettingsModal);
+            document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+        }
+
+        // --- Firestore Logic ---
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+        if (!userId) {
+            console.error("User not signed in.");
+            alert("Error: You are not signed in. Please refresh the page.");
+            return;
+        }
+            const entryData = {
+                stateAndFocus: document.getElementById('state-and-focus').value.trim(),
+                progressMade: document.getElementById('progress-made').value.trim(),
+                challengeAndGift: document.getElementById('challenge-and-gift').value.trim(),
+                newStandard: document.getElementById('new-standard').value.trim(),
+                createdAt: serverTimestamp()
+            };
+        if (!entryData.stateAndFocus) {
+            console.warn("The 'State and Focus' field cannot be empty.");
+            alert("The 'State and Focus' field cannot be empty.");
+            return;
+        }
+            try {
+                const collectionPath = `artifacts/${appId}/users/${userId}/entries`;
+                await addDoc(collection(db, collectionPath), entryData);
+                e.target.reset();
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("There was an error saving your entry. Please try again.");
+            }
+        }
+
+    function loadEntries(currentUid) {
+        if (!currentUid) return;
+        const collectionPath = `artifacts/${appId}/users/${currentUid}/entries`;
+            const entriesQuery = query(collection(db, collectionPath), orderBy('createdAt', 'desc'));
+            const container = document.getElementById('past-entries-container');
+            const loadingState = document.getElementById('loading-state');
+            const noEntriesMessage = document.getElementById('no-entries-message');
+
+        entriesUnsubscribe = onSnapshot(entriesQuery, (snapshot) => {
+                loadingState.style.display = 'none';
+                container.innerHTML = ''; // Clear previous entries
+                allEntries = snapshot.docs.map(doc => doc.data());
+                if (snapshot.empty) {
+                    noEntriesMessage.style.display = 'block';
+                } else {
+                    noEntriesMessage.style.display = 'none';
+                    allEntries.forEach(entry => container.appendChild(createEntryCard(entry)));
+                }
+            }, (error) => {
+                console.error("Error fetching entries:", error);
+                loadingState.style.display = 'none';
+                container.innerHTML = '<p class="text-red-500">Could not load your past entries.</p>';
+            });
+        }
+
+        function createEntryCard(entry) {
+            const card = document.createElement('div');
+            card.className = 'journal-card bg-stone-50/50 p-5 rounded-lg border border-stone-200';
+            const date = entry.createdAt ? entry.createdAt.toDate().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date not available';
+            card.innerHTML = `<div class="flex justify-between items-start"><p class="text-sm font-semibold text-amber-600">${date}</p><button class="get-ai-insights-btn text-xs bg-amber-100 text-amber-800 font-semibold py-1 px-3 rounded-full hover:bg-amber-200 transition-colors">✨ Get Insights</button></div><div class="mt-3 space-y-4 text-sm"><div><h4 class="font-semibold text-stone-700">My State & Focus:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.stateAndFocus||'N/A'}</p></div>${entry.progressMade?`<div><h4 class="font-semibold text-stone-700">My Progress:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.progressMade}</p></div>`:''}${entry.challengeAndGift?`<div><h4 class="font-semibold text-stone-700">Challenge & Gift:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.challengeAndGift}</p></div>`:''}${entry.newStandard?`<div><h4 class="font-semibold text-stone-700">My New Standard:</h4><p class="text-stone-600 whitespace-pre-wrap">${entry.newStandard}</p></div>`:''}</div>`;
+            card.querySelector('.get-ai-insights-btn').addEventListener('click', () => getSingleEntryInsights(entry));
+            return card;
+        }
+        
+        // --- AI Integration ---
+        async function callGemini(prompt, isJson = false) {
+           const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            let context = '';
+            if (userSettings.ageGroup && userSettings.ageGroup !== 'unspecified') {
+                context += `\n(Context: Please tailor the tone and examples to someone in the ${userSettings.ageGroup} age group.)`;
+            }
+             if (userSettings.language && userSettings.language !== 'English') {
+                context += `\nPlease respond in ${userSettings.language}.`;
+            }
+
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt + context }] }] };
+
+            if (isJson) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: { "sentiment": { "type": "STRING" }, "reason": { "type": "STRING" }, "date": { "type": "STRING" } },
+                            required: ["sentiment", "reason", "date"]
+                        }
+                    }
+                };
+            }
+
+            const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+            const result = await response.json();
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!text) throw new Error("Invalid response structure from AI.");
+            return isJson ? JSON.parse(text) : text;
+        }
+
+        async function getSingleEntryInsights(entry) {
+            const prompt = `As a peak performance coach in the style of Tony Robbins, analyze this journal entry. Acknowledge the user's chosen state and focus. Celebrate their progress. Reframe their challenge as a powerful opportunity. Reinforce their new standard. Keep it high-energy and empowering. Format using markdown.\n\nEntry:\n- State & Focus: "${entry.stateAndFocus}"\n- Progress: "${entry.progressMade||'N/A'}"\n- Challenge & Gift: "${entry.challengeAndGift||'N/A'}"\n- New Standard: "${entry.newStandard||'N/A'}"`;
+            openAiModal("Your Daily Debrief", "Analyzing your entry...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t get insights. Please try again.</p>'); }
+        }
+
+        async function getWeeklySummary() {
+            if (allEntries.length < 2) { alert("You need at least two entries for a weekly summary."); return; }
+            const formattedEntries = allEntries.slice(0, 7).map(e => `- On ${e.createdAt.toDate().toLocaleDateString()}: ${e.stateAndFocus}`).join('\n');
+            const prompt = `As a performance coach, analyze these journal entries. Identify recurring patterns in the user's state and focus. What is the overall trajectory of their momentum? Offer one powerful piece of advice for the week ahead to accelerate their progress. Format using markdown.\n\nEntries:\n${formattedEntries}`;
+            openAiModal("Your Weekly Summary", "Analyzing your week...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate a summary. Please try again.</p>'); }
+        }
+
+        async function getTodayFocus() {
+            const text = `My State & Focus: ${document.getElementById('state-and-focus').value.trim()}. My Challenge: ${document.getElementById('challenge-and-gift').value.trim()}. My New Standard: ${document.getElementById('new-standard').value.trim()}`;
+            if (text.length < 20) { alert("Please fill out at least one field to get a focus."); return; }
+            const prompt = `Based on my current reflection, suggest one powerful, actionable focus for the rest of the day that aligns with my new standard. Explain why it's the most important thing to focus on now.\n\nReflection: "${text}"`;
+            openAiModal("A Focus For Your Day", "Generating a suggestion...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate a focus. Please try again.</p>'); }
+        }
+
+        async function getInspirationalPrompt() {
+            const themes = allEntries.slice(0, 5).map(e => e.stateAndFocus).join('; ');
+            const prompt = `I need a powerful, empowering question to journal about, in the style of Tony Robbins. If you see themes in my recent entries, tailor the question to them. Otherwise, provide a general breakthrough question. Just the question, no preamble.\n\nRecent themes: ${themes}`;
+            try { document.getElementById('state-and-focus').value = await callGemini(prompt); } catch (e) { console.error(e); alert("Could not get a prompt right now."); }
+        }
+
+        async function askJournal() {
+            const question = document.getElementById('ask-journal-input').value.trim();
+            if (!question) { alert("Please enter a question."); return; }
+            if (allEntries.length < 1) { alert("You need at least one entry to ask a question."); return; }
+            const corpus = allEntries.map(e => `Entry from ${e.createdAt.toDate().toLocaleDateString()}:\n- State & Focus: ${e.stateAndFocus}\n- Progress: ${e.progressMade||'N/A'}\n- Challenge: ${e.challengeAndGift||'N/A'}`).join('\n---\n');
+            const prompt = `Answer the user's question based *only* on the provided journal entries. Synthesize info if needed. If the answer isn't in the journal, say so. Do not make anything up.\n\nQuestion: "${question}"\n\nJournal Entries:\n${corpus}`;
+            openAiModal("Asking Your Journal...", "Searching your past entries...");
+            try { updateModalContent(await callGemini(prompt)); document.getElementById('ask-journal-input').value = ''; } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t analyze your journal. Please try again.</p>'); }
+        }
+
+        async function visualizeJourney() {
+            if (allEntries.length < 3) { alert("You need at least three entries to visualize your journey."); return; }
+            const entriesToAnalyze = allEntries.slice(0, 30).reverse();
+            const prompt = `Analyze these journal entries. For each, provide a JSON object with: 1. "sentiment" (one of: "Empowered", "Struggling", "Neutral", "Breakthrough", "Growth-Oriented"). 2. "reason" (a brief explanation). 3. "date". Return a JSON array.\n\nEntries:\n${entriesToAnalyze.map(e => `Date: ${e.createdAt.toDate().toISOString().split('T')[0]}, Content: ${e.stateAndFocus}`).join('\n---\n')}`;
+            openAiModal("Visualizing Your Journey", "Analyzing sentiment of recent entries...");
+            try {
+                const sentimentData = await callGemini(prompt, true);
+                renderMoodVisualizer(sentimentData);
+            } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t visualize your journey. The AI response might have been invalid.</p>'); }
+        }
+
+        function renderMoodVisualizer(data) {
+            const container = document.getElementById('ai-response-container');
+            const sentimentColors = { "Empowered": "bg-green-500", "Growth-Oriented": "bg-blue-500", "Neutral": "bg-gray-400", "Breakthrough": "bg-purple-500", "Struggling": "bg-red-500" };
+            let visualizerHtml = `<div class="flex border border-stone-200 rounded-lg p-2 gap-px">${data.map(item => `<div class="mood-block flex-1 ${sentimentColors[item.sentiment] || 'bg-gray-300'} rounded-sm"><div class="mood-tooltip bg-stone-800 text-white text-xs rounded py-1 px-2 shadow-lg"><strong>${item.date}</strong>: ${item.reason}</div></div>`).join('')}</div>`;
+            visualizerHtml += `<div class="mt-4 text-xs text-stone-600">A visualization of your last ${data.length} entries, from oldest (left) to newest (right). Hover over a block for details.</div>`;
+            container.innerHTML = visualizerHtml;
+        }
+
+        async function discoverCoreValues() {
+            if (allEntries.length < 5) { alert("You need at least five entries to discover your core values."); return; }
+            const corpus = allEntries.map(e => e.stateAndFocus + (e.progressMade ? ". My progress: " + e.progressMade : "")).join('\n\n');
+            const prompt = `Act as a performance coach. Read my entire journal. Identify my top 3-5 core driving values (e.g., Growth, Contribution, Freedom). For each value, provide a brief explanation and 1-2 direct quotes from my journal as evidence of this value in action. Format using markdown.\n\nJournal:\n${corpus}`;
+            openAiModal("Discovering Your Core Values", "Reading your entire journal to find patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t discover your values. Please try again.</p>'); }
+        }
+        
+        async function reframeChallenge() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your challenge first."); return; }
+            const prompt = `Reframe the following challenge into a powerful statement about the gift or opportunity within it. Provide a concise, empowering statement. Just provide the reframed statement, no preamble.\n\nChallenge: "${challengeText}"`;
+            try {
+                const reframedText = await callGemini(prompt);
+                document.getElementById('new-standard').value = `The gift is ${reframedText}. My new standard is...`;
+            } catch (e) { console.error(e); alert("Sorry, I couldn't reframe that challenge right now."); }
+        }
+
+        async function setNewGoal() {
+            if (allEntries.length < 5) { alert("You need at least five entries to set a meaningful goal."); return; }
+            const corpus = allEntries.map(e => `On ${e.createdAt.toDate().toLocaleDateString()}: My progress was ${e.progressMade || 'not noted'}, and my challenge was ${e.challengeAndGift || 'not noted'}. My new standard was ${e.newStandard || 'not noted'}.`).slice(0, 15).join('\n');
+            const prompt = `Act as a performance coach. Based on my recent journal entries, suggest one specific, measurable, achievable, relevant, and time-bound (SMART) goal for me to focus on for the next week that aligns with my new standards. Explain why this goal will create momentum and provide 2-3 immediate first steps. Format using markdown.\n\nRecent Entries:\n${corpus}`;
+            openAiModal("Your Next Goal", "Analyzing your entries to suggest a new goal...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t set a goal for you. Please try again.</p>'); }
+        }
+
+        async function uncoverStrengths() {
+            if (allEntries.length < 5) { alert("You need at least five entries to uncover your strengths."); return; }
+            const corpus = allEntries.map(e => e.stateAndFocus + (e.progressMade ? ". My progress: " + e.progressMade : "") + (e.newStandard ? ". My new standard: " + e.newStandard : "")).join('\n\n');
+            const prompt = `Act as a performance coach. Read my entire journal. Identify my top 3 character strengths that are driving my progress (e.g., Resourcefulness, Determination, Courage). For each strength, provide a brief explanation and 1-2 direct quotes from my journal that demonstrate this strength. Format using markdown.\n\nJournal:\n${corpus}`;
+            openAiModal("Uncovering Your Strengths", "Analyzing your journal for character strengths...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t uncover your strengths. Please try again.</p>'); }
+        }
+
+        async function generateAffirmation() {
+            if (allEntries.length < 1) { alert("You need at least one entry to generate an affirmation."); return; }
+            const lastEntry = allEntries[0];
+            const context = `Yesterday's progress was "${lastEntry.progressMade || 'not specified'}" and my new standard is "${lastEntry.newStandard || 'not specified'}".`;
+            const prompt = `Based on my journal entry from yesterday, create a short, powerful, first-person "incantation" or affirmation for me to start my day with energy. It should reinforce my new standard and build on my progress. Just the incantation, no preamble.\n\nYesterday's context:\n${context}`;
+            openAiModal("Your Morning Incantation", "Generating a powerful start to your day...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate an affirmation. Please try again.</p>'); }
+        }
+
+        async function checkBlindSpots() {
+            if (allEntries.length < 5) { alert("You need at least five entries to check for blind spots."); return; }
+            const corpus = allEntries.map(e => `On ${e.createdAt.toDate().toLocaleDateString()}: My challenge was "${e.challengeAndGift || 'not specified'}". My new standard was "${e.newStandard || 'not specified'}".`).slice(0, 15).join('\n');
+            const prompt = `Act as a performance coach. Analyze my recent journal entries, focusing on challenges. Identify one potential "limiting belief" or pattern that might be holding me back. Gently point out the belief, explain how it might be limiting, and propose a more empowering belief to adopt instead. Format using markdown.\n\nRecent Challenges:\n${corpus}`;
+            openAiModal("Checking for Limiting Beliefs", "Analyzing your thought patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t analyze your blind spots. Please try again.</p>'); }
+        }
+
+        async function letterFromFutureSelf() {
+            if (allEntries.length < 5) { alert("You need at least five entries for your future self to write a letter."); return; }
+            const corpus = allEntries.map(e => `Entry: Progress was "${e.progressMade || 'not specified'}", challenge was "${e.challengeAndGift || 'not specified'}", new standard was "${e.newStandard || 'not specified'}".`).slice(0, 15).join('\n');
+            const prompt = `You are the user, five years in the future. You are living at your peak, having embodied the new standards from your past journal entries. Write a short, powerful letter back to your past self (the user). Reference one or two specific challenges from the entries and remind your past self of the strength they had to overcome them. Offer a piece of wisdom about the journey. Sign off with confidence. Format using markdown.\n\nPast Journal Entries:\n${corpus}`;
+            openAiModal("A Letter From Your Future Self", "Connecting with the future...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t write a letter from your future self. Please try again.</p>'); }
+        }
+
+        async function interpretDream() {
+            const dreamText = document.getElementById('dream-input').value.trim();
+            if (!dreamText) { alert("Please describe your dream first."); return; }
+            const prompt = `Act as a thoughtful dream interpreter. Analyze the following dream description. Provide a possible interpretation based on common archetypes and symbols (e.g., Jungian concepts), but clearly state that dream interpretation is subjective and this is just one perspective. Explore the potential emotions and themes present in the dream. Format using markdown.\n\nDream: "${dreamText}"`;
+            updateModalContent("<p>Interpreting your dream...</p>");
+            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>`;
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t interpret your dream. Please try again.</p>'); }
+        }
+
+        async function createMeditation() {
+            if (allEntries.length < 1) { alert("You need at least one entry to create a meditation script."); return; }
+            const lastEntry = allEntries[0];
+            const corpus = `My current state is: ${lastEntry.stateAndFocus}. My progress was: ${lastEntry.progressMade || 'not specified'}. My challenge was: ${lastEntry.challengeAndGift || 'not specified'}.`;
+            const prompt = `Based on my most recent journal entry, generate a short, empowering meditation script (about 150-200 words) to help me embody my desired state. The script should be in the second person ("You are..."). Focus on themes of strength, focus, and breathing into your power. Format using markdown.\n\nMy latest entry reflects these feelings:\n${corpus}`;
+            openAiModal("Your Personal Meditation", "Creating a mindfulness script for you...");
+            try { updateModalContent(await callGemini(prompt), 'meditative'); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a meditation script. Please try again.</p>'); }
+        }
+
+        async function getStoicWisdom() {
+            if (allEntries.length < 1) { alert("You need at least one entry to get Stoic wisdom."); return; }
+            const lastEntry = allEntries[0];
+            const prompt = `Act as a Stoic philosopher like Marcus Aurelius. Read my latest journal entry and offer a short, powerful reflection based on Stoic principles (e.g., focusing on what's in my control, the obstacle is the way, amor fati). Quote a relevant Stoic idea and apply it directly to my situation. Format using markdown.\n\nMy Entry:\n- State & Focus: ${lastEntry.stateAndFocus}\n- Progress: ${lastEntry.progressMade || 'N/A'}\n- Challenge: ${lastEntry.challengeAndGift || 'N/A'}`;
+            openAiModal("A Stoic's Reflection", "Consulting the ancient Stoics...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t get a Stoic reflection. Please try again.</p>'); }
+        }
+
+        async function checkCognitiveDistortions() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to check your thinking patterns."); return; }
+            const prompt = `Act as a compassionate CBT therapist. Analyze the following description of a challenge for potential cognitive distortions (like catastrophizing, all-or-nothing thinking, mind-reading, overgeneralization). If you find one, gently identify it, explain in simple terms why it might be a distorted way of thinking, and offer a more balanced, reframed thought. If no clear distortion is present, affirm the user's feelings and offer encouragement. Format using markdown.\n\nChallenge: "${challengeText}"`;
+            openAiModal("Checking Your Thinking", "Analyzing your thought patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t analyze your thinking patterns. Please try again.</p>'); }
+        }
+
+        async function createActionPlan() {
+            const newStandardText = document.getElementById('new-standard').value.trim();
+            if (!newStandardText) { alert("Please commit to a new standard to create an action plan."); return; }
+            const prompt = `Act as a productivity coach. Based on the user's 'new standard', create a simple, concrete 3-step action plan they can start *today*. Each step should be small, clear, and actionable. Explain why this plan will help build momentum towards their new standard. Format using markdown.\n\nNew Standard: "${newStandardText}"`;
+            openAiModal("Your Immediate Action Plan", "Building your steps to success...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create an action plan. Please try again.</p>'); }
+        }
+        
+        async function findMetaphor() {
+            if (allEntries.length < 1) { alert("You need at least one entry to find a metaphor."); return; }
+            const lastEntry = allEntries[0];
+            const prompt = `Act as a creative storyteller. Read the following journal entry and create a short, insightful metaphor or a single-paragraph story that captures the essence of the user's day, their struggle, and their breakthrough. The metaphor should be illuminating and offer a new perspective. Format using markdown.\n\nMy Entry:\n- State & Focus: ${lastEntry.stateAndFocus}\n- Progress: ${lastEntry.progressMade || 'N/A'}\n- Challenge: ${lastEntry.challengeAndGift || 'N/A'}`;
+            openAiModal("Your Day as a Metaphor", "Distilling your experience into a story...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a metaphor for you. Please try again.</p>'); }
+        }
+
+        async function nameMyGremlin() {
+            const challenges = allEntries.map(e => e.challengeAndGift).filter(c => c && c.trim() !== '');
+            if (challenges.length < 3) { alert("You need at least three entries with challenges noted to identify a recurring 'gremlin'."); return; }
+            const corpus = challenges.slice(0, 10).join('\n---\n');
+            const prompt = `Act as a wise and insightful coach (like a character from a fantasy novel). Analyze the user's recurring challenges from their journal. Give a creative, memorable name to the 'gremlin' or 'inner critic' archetype that seems to be causing these challenges (e.g., 'The Specter of "Not Enough"', 'The Siren of Tomorrow', 'The Architect of Invisible Walls'). Describe this gremlin's typical behavior and its core fear. Finally, offer one simple, actionable quest or strategy to start disarming it. Format using markdown.\n\nRecent Challenges:\n${corpus}`;
+            openAiModal("Naming Your Gremlin", "Identifying the pattern in your challenges...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your gremlin. Please try again.</p>'); }
+        }
+
+        async function socraticGuide() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to begin the Socratic dialogue."); return; }
+            const prompt = `Act as a Socratic guide. The user is facing a challenge. Your goal is NOT to give advice, but to help them find their own answer. Ask them a series of 3-4 powerful, open-ended questions that will help them clarify their thinking, explore their assumptions, and identify their own next steps. The questions should be thought-provoking and empowering. Format using markdown with each question as a numbered list item.\n\nMy Challenge: "${challengeText}"`;
+            openAiModal("A Socratic Guide", "Formulating questions to guide you...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate Socratic questions. Please try again.</p>'); }
+        }
+
+        async function reframeAsHerosJourney() {
+            if (allEntries.length < 3) { alert("You need at least three entries to frame your Hero's Journey."); return; }
+            const corpus = allEntries.slice(0, 5).map(e => `Entry:\n- Progress: ${e.progressMade || 'N/A'}\n- Challenge: ${e.challengeAndGift || 'N/A'}`).join('\n---\n');
+            const prompt = `Act as a mythologist like Joseph Campbell. Analyze my recent journal entries, focusing on challenges and progress. Frame my recent experiences within one of the stages of the Hero's Journey (e.g., The Call to Adventure, Refusal of the Call, Meeting the Mentor, The Ordeal, The Reward). Explain which stage I'm in, why it fits my situation, and what the next stage on the path might look like. Be inspiring and use mythological language. Format using markdown.\n\nRecent Entries:\n${corpus}`;
+            openAiModal("Your Hero's Journey", "Mapping your story to the great myths...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t map your Hero\'s Journey. Please try again.</p>'); }
+        }
+
+        async function identifySaboteur() {
+            const challenges = allEntries.map(e => e.challengeAndGift).filter(c => c && c.trim() !== '');
+            if (challenges.length < 3) { alert("You need at least three entries with challenges to identify a Saboteur."); return; }
+            const corpus = challenges.slice(0, 10).join('\n---\n');
+            const prompt = `Act as a coach familiar with the Positive Intelligence (PQ) framework. Based on my recent challenges, identify which of the 10 'Saboteur' archetypes (Judge, Controller, Avoider, Victim, Pleaser, Restless, Stickler, Hyper-Achiever, Hyper-Vigilant, Hyper-Rational) seems most active. Describe this Saboteur's characteristics, its core lie, and how it might be negatively impacting me. Offer one simple mental exercise or reframe to weaken its influence. Format using markdown.\n\nRecent Challenges:\n${corpus}`;
+            openAiModal("Identify Your Saboteur", "Analyzing your challenges for Saboteur patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your Saboteur. Please try again.</p>'); }
+        }
+
+        async function createFutureVisualization() {
+            const newStandardText = document.getElementById('new-standard').value.trim();
+            if (!newStandardText) { alert("Please commit to a 'New Standard' to create a visualization for it."); return; }
+            const prompt = `Act as a visualization coach. Based on my 'New Standard', write a short (200-250 words), vivid, sensory-rich guided visualization script. Use the second person ('You see...', 'You feel...', 'You hear...'). The script should guide me to experience the feeling of having already achieved this new standard. It should be calming and empowering. End with an instruction to take a deep breath and bring the feeling back into the present moment. Format using markdown.\n\nMy New Standard: "${newStandardText}"`;
+            openAiModal("Visualize Your New Standard", "Creating your visualization script...");
+            try { updateModalContent(await callGemini(prompt), 'meditative'); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a visualization script. Please try again.</p>'); }
+        }
+
+        async function meetYourParts() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe your current challenge to meet your inner parts."); return; }
+            const prompt = `Act as a compassionate Internal Family Systems (IFS) therapist. Based on my current challenge, which of my inner 'parts' (e.g., a protective 'Manager', a reactive 'Firefighter', or a vulnerable 'Exile') might be activated right now? Describe what each part might be trying to do for me and what it might be feeling. Offer a gentle, curious question I can ask one of these parts to understand it better. Format using markdown.\n\nMy Challenge: "${challengeText}"`;
+            openAiModal("Meet Your Inner Parts", "Getting to know your internal family...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your inner parts. Please try again.</p>'); }
+        }
+
+        async function unhookFromThoughts() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe a challenging thought to learn how to unhook from it."); return; }
+            const prompt = `Act as an Acceptance and Commitment Therapy (ACT) practitioner. I am struggling with a difficult thought or feeling related to this challenge: "${challengeText}". Provide one simple but effective cognitive defusion exercise to help me get some distance from my thoughts. Explain the exercise clearly and simply. Examples include thanking my mind, labeling thoughts ("I'm having the thought that..."), or imagining thoughts as leaves on a stream. Format using markdown.`;
+            openAiModal("Unhook From Your Thoughts", "Creating a mindfulness exercise for you...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t create a defusion exercise. Please try again.</p>'); }
+        }
+
+        async function getSixPerspectives() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please describe your challenge to explore it with the Six Thinking Hats."); return; }
+            const prompt = `Act as a facilitator using Edward de Bono's Six Thinking Hats. My challenge is: "${challengeText}". Generate one powerful, open-ended question for each of the six hats to help me explore this challenge from all angles. Present the response clearly with the hat color and name.\n\n- **White Hat (Facts & Information):**\n- **Red Hat (Feelings & Intuition):**\n- **Black Hat (Cautions & Risks):**\n- **Yellow Hat (Benefits & Optimism):**\n- **Green Hat (Creativity & New Ideas):**\n- **Blue Hat (Process & Next Steps):**\n\nFormat the output using markdown.`;
+            openAiModal("Six Perspectives on Your Challenge", "Putting on the thinking hats...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t generate the six perspectives. Please try again.</p>'); }
+        }
+
+        async function connectTheDots() {
+            if (allEntries.length < 10) { alert("You need at least 10 entries to see meaningful connections over time."); return; }
+            const latestEntry = allEntries[0];
+            const olderEntries = allEntries.slice(5); // Look at entries older than the last 5
+            const corpus = olderEntries.map(e => `Entry from ${e.createdAt.toDate().toLocaleDateString()}:\n- State & Focus: ${e.stateAndFocus}\n- Challenge: ${e.challengeAndGift || 'N/A'}`).join('\n---\n');
+            const prompt = `Act as an insightful historian of the self. My latest journal entry is:\n- State & Focus: "${latestEntry.stateAndFocus}"\n- Progress: "${latestEntry.progressMade || 'N/A'}"\n- Challenge: "${latestEntry.challengeAndGift || 'N/A'}"\n\nNow, look through these older entries and find one that shows a significant contrast or demonstrates a clear line of progress leading to today's entry. Quote both the old entry and the new entry, and write a short, insightful analysis of the connection, growth, or change you've found. Format using markdown.\n\nOlder Entries:\n${corpus}`;
+            openAiModal("Connecting the Dots", "Looking for patterns in your history...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t find a connection right now. Please try again.</p>'); }
+        }
+
+        async function roleModelMindset(roleModel) {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) { alert("Please write down your current challenge to get a role model's perspective."); return; }
+            const prompt = `Act as a mentor channeling the mindset of ${roleModel}. My current challenge is: "${challengeText}". How would ${roleModel} think about this problem? What advice would they give me? Frame it in their likely tone and style, focusing on their known principles and character traits. Format using markdown.`;
+            updateModalContent("<p>Channeling their mindset...</p>");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t channel that mindset. Please try again.</p>'); }
+        }
+
+        async function amplifyGratitude() {
+            const progressText = document.getElementById('progress-made').value.trim();
+            if (!progressText) { alert("Please write about some progress you made to amplify your gratitude for it."); return; }
+            const prompt = `Act as a gratitude coach. Read this statement of progress: "${progressText}". Now, expand on it. Write a short reflection that amplifies the gratitude. What other small things had to happen for this progress to be possible? Who else might have contributed, directly or indirectly? What future opportunities does this progress open up? Help me see the web of interconnected positivity. Format using markdown.`;
+            openAiModal("Amplifying Your Gratitude", "Finding more reasons to be thankful...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t amplify your gratitude. Please try again.</p>'); }
+        }
+        
+        async function reauthorPast() {
+            if (allEntries.length < 5) { alert("You need at least 5 entries to re-author your past."); return; }
+            const latestEntry = allEntries[0];
+            const pastChallengeEntry = allEntries.find(e => e.challengeAndGift && e.challengeAndGift.trim() !== '');
+            if (!pastChallengeEntry) { alert("Could not find a past entry with a significant challenge to re-author."); return; }
+            
+            const prompt = `Act as a narrative therapist. Here is a past challenge a user faced: "${pastChallengeEntry.challengeAndGift}" on ${pastChallengeEntry.createdAt.toDate().toLocaleDateString()}. And here is their most recent entry: "${latestEntry.stateAndFocus}". Rewrite the story of the past challenge, not as a moment of failure, but as a crucial turning point. Frame it as the necessary event that taught them the skills or gave them the perspective they have today. Show how the past self's struggle paved the way for the present self's strength. Format using markdown.`;
+            openAiModal("Re-authoring Your Past", "Looking back with new eyes...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t re-author that memory. Please try again.</p>'); }
+        }
+
+        async function uncoverArchetype() {
+            if (allEntries.length < 1) { alert("You need at least one entry to uncover your archetype."); return; }
+            const latestEntry = allEntries[0];
+            const prompt = `Act as a Jungian analyst. Based on this journal entry, what is the dominant archetype the user is embodying today (e.g., The Warrior, The Sage, The Innocent, The Explorer, The Creator, The Ruler, The Magician, The Lover, The Jester, The Caregiver, The Everyman, The Rebel)? Describe the archetype, explain why their entry points to it with specific examples, and offer one piece of advice for how this archetype can best navigate the day ahead. Format using markdown.\n\nToday's Entry:\n- State & Focus: "${latestEntry.stateAndFocus}"\n- Progress: "${latestEntry.progressMade || 'N/A'}"\n- Challenge: "${latestEntry.challengeAndGift || 'N/A'}"`;
+            openAiModal("Uncovering Your Archetype", "Analyzing your entry for archetypal patterns...");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t identify your archetype. Please try again.</p>'); }
+        }
+
+        async function futureSelfDialogue(question) {
+            const corpus = allEntries.map(e => `Entry: Progress was "${e.progressMade || 'not specified'}", challenge was "${e.challengeAndGift || 'not specified'}", new standard was "${e.newStandard || 'not specified'}".`).slice(0, 15).join('\n');
+            const prompt = `You are the user's wise, compassionate Future Self, five years from now. You have successfully navigated many challenges and grown immensely. Your past self (the user) is asking you a question about their current challenge. Read their question and their past journal entries to understand their journey. Then, answer their question with wisdom, perspective, and encouragement. Do not give simple answers, but guide them towards their own strength. Sign off warmly.\n\nMy past journey:\n${corpus}\n\nMy question for you is: "${question}"`;
+            updateModalContent("<p>Consulting your Future Self...</p>");
+            try { updateModalContent(await callGemini(prompt)); } catch (e) { console.error(e); updateModalContent('<p class="text-red-500">Sorry, I couldn\'t connect with your Future Self. Please try again.</p>'); }
+        }
+
+        // --- TTS and Modal Controls ---
+        
+        // Helper to decode base64
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Helper to convert raw PCM to a playable WAV Blob
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const blockAlign = (numChannels * bitsPerSample) / 8;
+            const byteRate = sampleRate * blockAlign;
+            const dataSize = pcmData.byteLength;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            // RIFF header
+            view.setUint32(0, 1380533830, false); // "RIFF"
+            view.setUint32(4, 36 + dataSize, true); // file size - 8
+            view.setUint32(8, 1463899717, false); // "WAVE"
+            // FMT sub-chunk
+            view.setUint32(12, 1718449184, false); // "fmt "
+            view.setUint32(16, 16, true); // subchunk size
+            view.setUint16(20, 1, true); // audio format 1 = PCM
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitsPerSample, true);
+            // DATA sub-chunk
+            view.setUint32(36, 1684108385, false); // "data"
+            view.setUint32(40, dataSize, true);
+
+            // Write PCM data
+            new Uint8Array(buffer, 44).set(new Uint8Array(pcmData));
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+        
+        async function speakText(textToSpeak, pace = 'normal') {
+            if (currentAudio && !currentAudio.paused) {
+                currentAudio.pause();
+                currentAudio = null;
+                document.getElementById('speak-btn').textContent = '🔊';
+                return;
+            }
+            const speakBtn = document.getElementById('speak-btn');
+            speakBtn.textContent = '⏳';
+            speakBtn.classList.add('loading');
+
+            try {
+                let prompt;
+                if (pace === 'meditative') {
+                    prompt = `Say in a calm, soothing voice, at a slow, meditative pace: ${textToSpeak}`;
+                } else {
+                    prompt = `Say in a clear, empowering voice: ${textToSpeak}`;
+                }
+
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: userSettings.voice || 'Charon' }
+                            }
+                        }
+                    },
+                };
+                const apiKey = "AIzaSyB-IkeKUM7CTR2ShksLzxREWZu5RLQNGBI";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`TTS API request failed with status ${response.status}`);
+                const result = await response.json();
+                
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const wavBlob = pcmToWav(pcmData, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    currentAudio = new Audio(audioUrl);
+                    speakBtn.textContent = '⏸️'; // Playing state
+                    currentAudio.play();
+                    currentAudio.onended = () => {
+                        speakBtn.textContent = '🔊';
+                        currentAudio = null;
+                    };
+                } else {
+                    throw new Error("Invalid audio data in response.");
+                }
+
+            } catch (error) {
+                console.error("Error generating speech:", error);
+                alert("Sorry, I couldn't generate the audio at this moment.");
+                speakBtn.textContent = '🔊';
+            } finally {
+                speakBtn.classList.remove('loading');
+            }
+        }
+
+        function openDreamModal() {
+            openAiModal("Dream Interpreter", "");
+            const responseContainer = document.getElementById('ai-response-container');
+            const modalFooter = document.getElementById('ai-modal-footer');
+            responseContainer.innerHTML = `
+                <p class="text-sm text-stone-600 mb-4">Describe your dream in as much detail as you can remember. The AI will offer a possible interpretation.</p>
+                <textarea id="dream-input" rows="8" class="w-full rounded-md border-stone-300 shadow-sm p-3"></textarea>
+            `;
+            modalFooter.innerHTML = `
+                <button id="submit-dream-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-slate-600 hover:bg-slate-700">Interpret Dream</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
+            `;
+            document.getElementById('submit-dream-btn').addEventListener('click', interpretDream);
+        }
+
+        function openRoleModelModal() {
+            const challengeText = document.getElementById('challenge-and-gift').value.trim();
+            if (!challengeText) {
+                alert("Please write down your current challenge before seeking a role model's perspective.");
+                return;
+            }
+            openAiModal("Role Model Mindset", "");
+            const responseContainer = document.getElementById('ai-response-container');
+            const modalFooter = document.getElementById('ai-modal-footer');
+            responseContainer.innerHTML = `
+                <p class="text-sm text-stone-600 mb-4">Whose mindset would you like to channel for your current challenge? This could be anyone—a historical figure, a mentor, an author, a fictional character.</p>
+                <input type="text" id="role-model-input" class="w-full rounded-md border-stone-300 shadow-sm p-3" placeholder="e.g., Marcus Aurelius, a wise old owl, my grandfather">
+            `;
+            modalFooter.innerHTML = `
+                <button id="submit-role-model-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-500 hover:bg-pink-600">Get Perspective</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
+            `;
+            document.getElementById('submit-role-model-btn').addEventListener('click', () => {
+                const roleModel = document.getElementById('role-model-input').value.trim();
+                if (roleModel) {
+                    roleModelMindset(roleModel);
+                } else {
+                    alert("Please enter a role model.");
+                }
+            });
+        }
+
+        function openFutureSelfDialogueModal() {
+            if (allEntries.length < 5) {
+                alert("You need at least 5 entries to have a meaningful dialogue with your Future Self.");
+                return;
+            }
+            openAiModal("Dialogue with Your Future Self", "");
+            const responseContainer = document.getElementById('ai-response-container');
+            const modalFooter = document.getElementById('ai-modal-footer');
+            responseContainer.innerHTML = `
+                <p class="text-sm text-stone-600 mb-4">Ask your wise Future Self a question about a current challenge or uncertainty. They have the benefit of hindsight and want to see you succeed.</p>
+                <textarea id="future-self-q-input" rows="4" class="w-full rounded-md border-stone-300 shadow-sm p-3" placeholder="e.g., What's the most important thing for me to remember as I navigate this career change?"></textarea>
+            `;
+            modalFooter.innerHTML = `
+                <button id="submit-future-self-q-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-600">Ask Your Future Self</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Cancel</button>
+            `;
+            document.getElementById('submit-future-self-q-btn').addEventListener('click', () => {
+                const question = document.getElementById('future-self-q-input').value.trim();
+                if (question) {
+                    futureSelfDialogue(question);
+                } else {
+                    alert("Please enter a question for your Future Self.");
+                }
+            });
+        }
+
+        function openAiModal(title, loadingMessage) {
+            const modal = document.getElementById('ai-modal');
+            document.getElementById('ai-modal-title').textContent = title;
+            document.getElementById('ai-response-container').innerHTML = `<p>${loadingMessage}</p>`;
+            document.getElementById('speak-btn').classList.add('hidden');
+            document.getElementById('ai-modal-footer').innerHTML = `<button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>`;
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('opacity-100'); modal.querySelector('div > div').classList.add('scale-100'); }, 10);
+        }
+        
+        function updateModalContent(htmlContent, pace = 'normal') {
+            const formatted = htmlContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/^(#{1,3})\s(.*)/gm, (m, h, c) => `<h${h.length+2}>${c}</h${h.length+2}>`).replace(/^- (.*)/gm, '<ul><li>$1</li></ul>').replace(/<\/ul>\s?<ul>/g, '');
+            const responseContainer = document.getElementById('ai-response-container');
+            responseContainer.innerHTML = `<div class="prose max-w-none">${formatted}</div>`;
+            
+            const speakBtn = document.getElementById('speak-btn');
+            speakBtn.classList.remove('hidden');
+            speakBtn.onclick = () => speakText(responseContainer.innerText, pace);
+
+            if (userSettings.autoSpeak) {
+                setTimeout(() => {
+                    speakText(responseContainer.innerText, pace);
+                }, 100);
+            }
+            
+            // Add export buttons after content is loaded
+            const footer = document.getElementById('ai-modal-footer');
+            footer.innerHTML = `
+                <button id="export-pdf-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-500 hover:bg-amber-600">Save as PDF</button>
+                <button id="export-txt-btn" class="py-2 px-5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-stone-600 hover:bg-stone-700">Save as Text</button>
+                <button onclick="closeAiModal()" class="py-2 px-5 border border-stone-300 rounded-md shadow-sm text-sm font-medium text-stone-700 bg-white hover:bg-stone-50">Close</button>
+            `;
+            document.getElementById('export-pdf-btn').addEventListener('click', exportAiInsightToPdf);
+            document.getElementById('export-txt-btn').addEventListener('click', exportAiInsightToTxt);
+        }
+
+        window.closeAiModal = function() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            const modal = document.getElementById('ai-modal');
+            modal.classList.remove('opacity-100');
+            modal.querySelector('div > div').classList.remove('scale-100');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+        
+        // --- Settings Modal ---
+        function openSettingsModal() {
+            document.getElementById('age-group-select').value = userSettings.ageGroup;
+            document.getElementById('voice-select').value = userSettings.voice;
+            document.getElementById('language-select').value = userSettings.language;
+            document.getElementById('autospeak-toggle').checked = userSettings.autoSpeak;
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        window.closeSettingsModal = function() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        async function saveSettings() {
+            if (!userId) {
+                alert("You must be logged in to save settings.");
+                return;
+            }
+            const newSettings = {
+                ageGroup: document.getElementById('age-group-select').value,
+                voice: document.getElementById('voice-select').value,
+                language: document.getElementById('language-select').value,
+                autoSpeak: document.getElementById('autospeak-toggle').checked,
+            };
+
+            const settingsRef = doc(db, `artifacts/${appId}/users/${userId}/settings/preferences`);
+            try {
+                await setDoc(settingsRef, newSettings);
+                userSettings = newSettings; // Update local state
+                closeSettingsModal();
+            } catch (error) {
+                console.error("Error saving settings:", error);
+                alert("Could not save your settings. Please try again.");
+            }
+        }
+
+    async function loadSettings(currentUid) {
+        if (!currentUid) return;
+        const settingsRef = doc(db, `artifacts/${appId}/users/${currentUid}/settings/preferences`);
+            try {
+                const docSnap = await getDoc(settingsRef);
+                if (docSnap.exists()) {
+                    userSettings = { ...userSettings, ...docSnap.data() };
+                } else {
+                    console.log("No settings document found, using defaults.");
+                }
+            } catch (error) {
+                console.error("Error loading settings:", error);
+            }
+        }
+        
+        function initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                console.warn("Speech Recognition API is not supported in this browser.");
+                document.querySelectorAll('.mic-btn').forEach(btn => btn.style.display = 'none');
+                return;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US'; 
+
+            recognition.onstart = () => {
+                isListening = true;
+                if (activeMicButton) {
+                    activeMicButton.classList.add('is-listening');
+                    activeMicButton.innerHTML = '🛑';
+                }
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                if (activeMicButton) {
+                    activeMicButton.classList.remove('is-listening');
+                    activeMicButton.innerHTML = '🎤';
+                }
+                activeTextarea = null;
+                activeMicButton = null;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error", event.error);
+                isListening = false;
+            };
+
+            recognition.onresult = (event) => {
+                if (!activeTextarea) return;
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if(finalTranscript.trim()){
+                     activeTextarea.value += (activeTextarea.value.length > 0 ? ' ' : '') + finalTranscript;
+                }
+            };
+            
+            document.querySelectorAll('.mic-btn').forEach(btn => {
+                btn.addEventListener('click', toggleListening);
+            });
+        }
+
+        function toggleListening(event) {
+            const button = event.currentTarget;
+            const targetId = button.dataset.target;
+            const targetTextarea = document.getElementById(targetId);
+
+            if (!targetTextarea) return;
+
+            if (isListening) {
+                recognition.stop();
+                if (activeMicButton === button) {
+                    return;
+                }
+            }
+            
+            activeTextarea = targetTextarea;
+            activeMicButton = button;
+            recognition.start();
+        }
+        
+        // --- Export Functions ---
+        function exportAiInsightToPdf() {
+            const { jsPDF } = window.jspdf;
+            const insightContent = document.getElementById('ai-response-container');
+            const doc = new jsPDF();
+
+            doc.html(insightContent, {
+                callback: function (doc) {
+                    doc.save('journal-insight.pdf');
+                },
+                x: 10,
+                y: 10,
+                width: 190,
+                windowWidth: 800
+            });
+        }
+
+        function exportAiInsightToTxt() {
+            const insightText = document.getElementById('ai-response-container').innerText;
+            const blob = new Blob([insightText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'journal-insight.txt';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+
+        // --- Start the App ---
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+
+</body>
+</html>
