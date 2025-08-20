@@ -305,59 +305,48 @@
         let activeMicButton = null;
 
         // --- App Initialization ---
+
         async function initialize() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
 
-                onAuthStateChanged(auth, async (user) => {
-                // Always clean up the old listener when auth state changes
-                if (entriesUnsubscribe) {
-                    entriesUnsubscribe();
-                    entriesUnsubscribe = null;
-                }
-
-                if (user && !user.isAnonymous) {
-                    // This is a permanent user, signed in with Google or custom token.
-                        userId = user.uid;
-
-                    if (!user.displayName) {
-                        await user.reload();
-                    }
-
-                        document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
-
-                    await loadSettings(userId);
-                    loadEntries(userId); // Pass UID directly
-
-                        document.getElementById('login-screen').classList.add('hidden');
-                        document.getElementById('main-content').classList.remove('hidden');
-                    } else {
-                    // User is anonymous, signed out, or null. Show the login screen.
-                    userId = user ? user.uid : null;
-                        document.getElementById('login-screen').classList.remove('hidden');
-                        document.getElementById('main-content').classList.add('hidden');
-                    document.getElementById('past-entries-container').innerHTML = ''; // Clear entries
-                    }
-                });
-
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-            } else if (!auth.currentUser) {
-                // Ensure the user is always authenticated, even if anonymously, if no token and not already logged in.
-                await signInAnonymously(auth);
-                }
-                
-                setupUI();
-                initializeSpeechRecognition();
-
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                document.getElementById('app-container').innerHTML = `<div class="text-center text-red-500 p-8"><h2>Oops! Something went wrong.</h2><p>Could not connect to the journal service. Please check the console for errors and try again later.</p><p class="mt-2 text-sm text-gray-600">${error.message}</p></div>`;
+        onAuthStateChanged(auth, async (user) => {
+            if (entriesUnsubscribe) {
+                entriesUnsubscribe();
+                entriesUnsubscribe = null;
             }
-        }
-        
+
+            if (user && !user.isAnonymous) {
+                userId = user.uid;
+                if (!user.displayName) {
+                    await user.reload();
+                }
+                document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
+                await loadSettings(userId);
+                loadEntries(userId);
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } else {
+                userId = null;
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('main-content').classList.add('hidden');
+                document.getElementById('past-entries-container').innerHTML = '';
+            }
+        });
+
+        // The problematic line that called signInAnonymously() has been removed.
+
+        setupUI();
+        initializeSpeechRecognition();
+
+    } catch (error) {
+        console.error("Firebase initialization failed:", error);
+        document.getElementById('app-container').innerHTML = `<div class="text-center text-red-500 p-8"><h2>Oops! Something went wrong.</h2><p>Could not connect to the journal service. Please check the console for errors and try again later.</p><p class="mt-2 text-sm text-gray-600">${error.message}</p></div>`;
+    }
+}
+
         // --- Authentication Functions ---
         async function signInWithGoogle() {
             const provider = new GoogleAuthProvider();
