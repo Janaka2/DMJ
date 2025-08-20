@@ -305,6 +305,7 @@
         let activeMicButton = null;
 
         // --- App Initialization ---
+
         async function initialize() {
             try {
                 const app = initializeApp(firebaseConfig);
@@ -312,42 +313,30 @@
                 auth = getAuth(app);
 
                 onAuthStateChanged(auth, async (user) => {
-                // Always clean up the old listener when auth state changes
                 if (entriesUnsubscribe) {
                     entriesUnsubscribe();
                     entriesUnsubscribe = null;
                 }
 
                 if (user && !user.isAnonymous) {
-                    // This is a permanent user, signed in with Google or custom token.
                         userId = user.uid;
-
                     if (!user.displayName) {
                         await user.reload();
                     }
-
                         document.getElementById('user-id-display').textContent = `Welcome, ${user.displayName || 'User'}!`;
-
                     await loadSettings(userId);
-                    loadEntries(userId); // Pass UID directly
-
+                loadEntries(userId);
                         document.getElementById('login-screen').classList.add('hidden');
                         document.getElementById('main-content').classList.remove('hidden');
                     } else {
-                    // User is anonymous, signed out, or null. Show the login screen.
-                    userId = user ? user.uid : null;
+                userId = null;
                         document.getElementById('login-screen').classList.remove('hidden');
                         document.getElementById('main-content').classList.add('hidden');
-                    document.getElementById('past-entries-container').innerHTML = ''; // Clear entries
+                document.getElementById('past-entries-container').innerHTML = '';
                     }
                 });
 
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-            } else if (!auth.currentUser) {
-                // Ensure the user is always authenticated, even if anonymously, if no token and not already logged in.
-                await signInAnonymously(auth);
-                }
+        // The problematic line that called signInAnonymously() has been removed.
                 
                 setupUI();
                 initializeSpeechRecognition();
