@@ -3,9 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>මානව රියදුරු තක්සේරුව – මානව අවශ්‍යතා 6 (Single-File SaaS)</title>
-  <meta name="description" content="ප්‍රධාන මානව රියදුරු (ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6) ඇගයීම, ආතති හැසිරීම් සහ සෘණාත්මක හැඟීම් රටා ඇතුළත් වෘත්තීයමය තක්සේරුව." />
-  <!-- your same styles here -->
+  <title>මානව ධාවක ඇගයීම – මානව අවශ්‍යතා 6 (Single-File SaaS)</title>
+  <meta name="description" content="ප්‍රමුඛ මානව ධාවක (ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6) ඇගයීමට වෘත්තීයමය ඇගයීමක් — පීඩනය යටතේ හැසිරීම් සහ අහිතකර සංවේග රටාවන් ඇතුළත්. එකම ගොනුවක්, GitHub Pages සඳහා සූදානම්." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #121318;
+      --muted: #a3aab9;
+      --text: #e9edf4;
+      --accent: #5b9cff;
+      --accent-2: #6ee7b7;
+      --warn: #ffb86b;
+      --danger: #ff6b6b;
+      --ok: #22c55e;
+      --card: #161823;
+      --border: #24273a;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 16px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo { width:36px; height:36px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#0a0a0a; }
+    .title { font-size: clamp(18px, 3vw, 22px); font-weight: 700; letter-spacing: .3px; }
+    .subtitle { color: var(--muted); font-size: 13px; }
+    .toolbar { display:flex; gap:10px; flex-wrap: wrap; }
+    button, .btn {
+      appearance:none; border:1px solid var(--border); background: #10121a; color: var(--text);
+      padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; transition:.2s ease; font-size: 14px;
+    }
+    button:hover, .btn:hover { transform: translateY(-1px); border-color: #2e3250; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #3f7eff); border-color: transparent; color:#0a0a0a; }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost { background: #0f1118; }
+    .btn-danger { background: #1c1111; border-color: #3b1a1a; color: #ffb3b3; }
+    .grid { display:grid; gap:16px; }
+    .col-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { background: var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; }
+    .card h3 { margin: 0 0 6px; font-size: 18px; }
+    .card p { margin: 6px 0 10px; color: var(--muted); font-size: 14px; }
+    .fieldset { border-top:1px dashed var(--border); padding-top:10px; margin-top:8px; }
+    label { display:block; font-size:14px; margin-bottom: 6px; }
+    input[type="text"], input[type="email"], select {
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#0e1017; color:var(--text);
+    }
+    .scale { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+    .scale span { color: var(--muted); font-size: 12px; }
+    .options { display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap:6px; width:100%; }
+    .radio { display:grid; place-items:center; }
+    .radio input { appearance:none; width:38px; height:34px; border-radius:8px; border:1px solid var(--border); background:#0e1017; cursor:pointer; }
+    .radio input:checked { outline: 2px solid var(--accent); border-color: #3c4a7a; background: #10152a; }
+    .section-title { font-size: 16px; font-weight: 700; letter-spacing:.3px; margin: 2px 0 8px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1a12; border:1px solid #213424; color:#9ee0b3; font-weight:700; font-size:12px; }
+    .stats { display:grid; gap:12px; }
+    .bar { background:#0f1118; border:1px solid var(--border); border-radius:10px; overflow:hidden; height:14px; }
+    .bar > div { height:100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+    .result-row { display:grid; grid-template-columns: 150px 1fr 70px; align-items:center; gap:10px; }
+    .result-row span { font-size: 13px; }
+    .rank { font-weight:800; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:#0f1118; font-size:12px; color:var(--muted); }
+    .footer { color: var(--muted); font-size: 12px; margin-top: 20px; text-align:center; }
+    .error { color: var(--danger); font-size: 13px; margin-top: 8px; }
+    .success { color: var(--accent-2); font-size: 13px; }
+    .hidden { display:none !important; }
+    .divider { height:1px; background: var(--border); margin: 8px 0; }
+    .chips { display:flex; gap:8px; flex-wrap: wrap; }
+    .chip { padding:6px 10px; background:#0f1118; border:1px solid var(--border); border-radius:999px; font-size:12px; }
+    .kpis { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; }
+    .kpi { background: #0f1118; border:1px solid var(--border); border-radius:12px; padding:12px; }
+    .kpi h4 { margin:0; font-size:13px; color: var(--muted); }
+    .kpi .num { font-size: 22px; font-weight: 800; margin-top: 6px; }
+    .link { color: var(--accent-2); text-decoration: none; }
+    @media (max-width: 860px) { .col-2 { grid-template-columns: 1fr; } .result-row { grid-template-columns: 120px 1fr 60px; } }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -13,35 +87,35 @@
       <div class="brand">
         <div class="logo">HN</div>
         <div>
-          <div class="title">මානව රියදුරු තක්සේරුව</div>
-          <div class="subtitle">ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6 · ආතති හැසිරීම් · සෘණාත්මක හැඟීම් රටා</div>
+          <div class="title">මානව ධාවක ඇගයීම</div>
+          <div class="subtitle">ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6 · පීඩනය යටතේ හැසිරීම් · අහිතකර සංවේග රටාවන්</div>
         </div>
       </div>
       <div class="toolbar">
         <button id="newBtn" class="btn">නව</button>
         <button id="saveBtn" class="btn">සුරකින්න</button>
-        <button id="exportBtn" class="btn">CSV නිරයාත</button>
+        <button id="exportBtn" class="btn">CSV නිර්යාත</button>
         <button id="printBtn" class="btn">මුද්‍රණය / PDF</button>
-        <button id="themeBtn" class="btn">☾ තේමාව</button>
+        <button id="themeBtn" class="btn">☾ තේමා</button>
       </div>
     </header>
 
     <!-- Respondent Info -->
     <section class="card">
-      <h3>ප්‍රතිචාර දෙන අය</h3>
-      <p class="muted">විකල්ප සම්බන්ධතා ක්ෂේත්‍ර ඔබට ප්‍රතිඵල සකස් කිරීමට උපකාරී වේ (ඔබේ බ්‍රව්සරයේ පමණක් ගබඩා වේ, නිරයාත කළහොත් විතරයි පිටතට යන්නේ).</p>
+      <h3>ප්‍රතිචාරකයා</h3>
+      <p class="muted">විකල්ප සම්බන්ධතා ක්ෂේත්‍ර ඔබේ ප්‍රතිඵල සංවිධානයට උපකාරී වේ (ඔබ Export කරනතෙක් දත්ත බ්‍රවුසර් තුළ පමණි).</p>
       <div class="grid col-2">
         <div>
-          <label for="name">නම</label>
-          <input id="name" type="text" placeholder="උදා: අලෙක්ස් මියුලර්" />
+          <label for="name">නාමය</label>
+          <input id="name" type="text" placeholder="උ., Alex Müller" />
         </div>
         <div>
           <label for="email">ඊමේල්</label>
-          <input id="email" type="email" placeholder="උදා: alex@example.com" />
+          <input id="email" type="email" placeholder="උ., alex@example.com" />
         </div>
         <div>
-          <label for="role">භූමිකාව / පරිසරය</label>
-          <input id="role" type="text" placeholder="උදා: නිෂ්පාදන කළමනාකරු, සම්මුඛ පරීක්ෂණය, පුහුණුව" />
+          <label for="role">භූමිකාව / සන්දර්භය</label>
+          <input id="role" type="text" placeholder="උ., නිෂ්පාදන කළමණාකරු, සම්මුඛ, පුහුණුව" />
         </div>
         <div>
           <label for="date">දිනය</label>
@@ -53,31 +127,31 @@
     <!-- Assessment Form -->
     <section class="grid col-2">
       <div class="card">
-        <h3>අංශ A · එදිනෙදා අභිප්‍රේරණ</h3>
-        <p class="muted">සෑම ප්‍රකාශයක්ම ශ්‍රේණිගත කරන්න <b>1 (දැඩි ලෙස එකඟ නොවෙමි)</b> සිට <b>7 (පූර්ණයෙන් එකඟයි)</b> දක්වා.</p>
+        <h3>කොටස A · දිනපතා ප්‍රේරණ</h3>
+        <p class="muted">එක් එක් ප්‍රකාශය <b>1 (දෘඪව එකඟ නොවෙමි)</b> සිට <b>7 (දෘඪව එකඟ වෙමි)</b> දක්වා ඇගයන්න.</p>
         <div id="sectionA"></div>
       </div>
 
       <div class="card">
-        <h3>අංශ B · ආතතිය යටතේ හැසිරීම්</h3>
-        <p class="muted">පීඩනය යටතේ, මේවා සිදු වීමේ හැඟීම කොපමණද? <b>1 (කවදාවත් නැත)</b> සිට <b>7 (සෑම විටම)</b> දක්වා.</p>
+        <h3>කොටස B · පීඩනය යටතේ හැසිරීම්</h3>
+        <p class="muted">පීඩනයක් ඇති විට, මෙවා සිදුවීමට තිබෙන හැකියාව: <b>1 (කිසිදා නොසිදු වේ)</b> සිට <b>7 (සැමවිටම)</b>.</p>
         <div id="sectionB"></div>
       </div>
 
       <div class="card">
-        <h3>අංශ C · සෘණාත්මක හැඟීම් රටා</h3>
-        <p class="muted">ඔබට මෙම හැඟීම් කොපමණ වාර ගණනාවක පටන්ගන්නවද? <b>1 (අත්‍යල්පයෙන්)</b> සිට <b>7 (බොහෝ වාර ගණනාවක)</b> දක්වා.</p>
+        <h3>කොටස C · අහිතකර සංවේග රටාවන්</h3>
+        <p class="muted">මෙම හැඟීම් ඔබට කෙතරම් වාර ගණනක් ඇතිවෙයිද? <b>1 (අල්ප වරක්)</b> සිට <b>7 (බොහෝ වරක්)</b>.</p>
         <div id="sectionC"></div>
       </div>
 
       <div class="card">
-        <h3>ලකුණු සහ අවබෝධය</h3>
-        <p class="muted"><b>ගණනය කරන්න</b> ක්ලික් කර ප්‍රධාන රියදුරු, සමාන්‍ය ගුණාංග සහ පුහුණු සටහන් බලන්න. ඔබට බහු ඇගයීම් දේශීයව සුරක්ෂිත කළ හැක.</p>
+        <h3>ලකුණු කිරීම & අවබෝධ</h3>
+        <p class="muted"><b>ගණනය කරන්න</b> ක්ලික් කර ප්‍රමුඛ ධාවක, ඉහළ 2 අතර වෙනස, සහ සමතුලිතතා දර්ශකය බලන්න. ඔබට බහුවර ප්‍රතිඵල දේශීයව සුරක්ෂිත කර තැබිය හැක.</p>
         <div class="chips" id="hints"></div>
         <div class="divider"></div>
         <div class="kpis">
-          <div class="kpi"><h4>ප්‍රධාන රියදුරු</h4><div class="num" id="kpiTop">–</div></div>
-          <div class="kpi"><h4>ඉහළ 2 අතර තරඟය</h4><div class="num" id="kpiSpread">–</div></div>
+          <div class="kpi"><h4>උසස්ම ධාවකය</h4><div class="num" id="kpiTop">–</div></div>
+          <div class="kpi"><h4>ඉහළ 2 පරාසය</h4><div class="num" id="kpiSpread">–</div></div>
           <div class="kpi"><h4>සමතුලිත දර්ශකය</h4><div class="num" id="kpiBalance">–</div></div>
         </div>
         <div class="divider"></div>
@@ -87,31 +161,508 @@
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
           <button id="calcBtn" class="btn-primary">ගණනය කරන්න</button>
           <button id="resetBtn" class="btn-ghost">පිළිතුරු නැවත සකසන්න</button>
-          <button id="demoBtn" class="btn-ghost">උදාහරණ පුරවන්න</button>
+          <button id="demoBtn" class="btn-ghost">ඩෙමෝ පුරවන්න</button>
         </div>
       </div>
     </section>
 
     <!-- Saved Assessments -->
     <section class="card">
-      <h3>සුරැකුම් ඇගයීම් (දේශීය)</h3>
-      <p class="muted">සියලුම දත්ත ඔබේ බ්‍රව්සරයේ පවතී, නිරයාත කරන තුරු. අයිතමයක් තෝරාගන්න එය නැවත පූරණය කිරීමට.</p>
+      <h3>ගබඩා කර ඇති ඇගයීම් (දේශීය)</h3>
+      <p class="muted">Export කරන තුරු සියළු දත්ත ඔබේ බ්‍රවුසර් තුළ පමණි. පූරණය කිරීමට අයිතමයක් ක්ලික් කරන්න.</p>
       <div id="savedList" class="grid"></div>
     </section>
 
-    <p class="footer">තොරතුරු නිරීක්ෂණ නැත, සේවාදායක නැත. GitHub Pages මත ඔබට සුරකින්න පුළුවන් එකම ගොනුවක යෙදුම. © 2025 — මානව රියදුරු මෙවලම.</p>
+    <p class="footer">නිරීක්ෂණයක් නැත, සේවාදායක නැත. GitHub Pages හි ධාවනය කළ හැකි එකම ගොනු යෙදුමක්. © 2025 — Human Drivers Toolkit.</p>
   </div>
 
   <script>
+    // -----------------------------
+    // Domain Model & Configuration
+    // -----------------------------
     const DRIVERS = [
-      { key: 'certainty', label: 'නිශ්චිතතාවය', color: '#7aa2ff' },
-      { key: 'variety', label: 'විවිධතාවය', color: '#71e7d1' },
+      { key: 'certainty', label: 'නිශ්චිතතාව', color: '#7aa2ff' },
+      { key: 'variety', label: 'විවිධතාව', color: '#71e7d1' },
       { key: 'significance', label: 'වැදගත්කම', color: '#f4ac52' },
-      { key: 'connection', label: 'ආදරය සහ සම්බන්ධතාවය', color: '#f585ae' },
+      { key: 'connection', label: 'ආදරය සහ සම්බන්ධතාව', color: '#f585ae' },
       { key: 'growth', label: 'වර්ධනය', color: '#a9e34b' },
       { key: 'contribution', label: 'දායකත්වය', color: '#b1a7ff' }
     ];
 
-    // Example of Section A translation
+    // Section weights allow emphasis adjustment without touching items
+    const WEIGHTS = {
+      A: 1.00,  // Everyday motivations
+      B: 1.30,  // Behavior under stress (diagnostically potent)
+      C: 1.10   // Negative emotion patterns
+    };
+
+    // Section A — 3 statements per driver (18 total)
     const SECTION_A = [
-      { d: 'certainty',
+      { d: 'certainty',  t: 'මට ස්ථාවරතාවය, පැහැදිලි සැලසුම් සහ අනුමාන කළ හැකි බව ප්‍රියයි.' },
+      { d: 'certainty',  t: 'අපදවන්නා නම් කරන පියවර ගනිමි (උදා., රක්ෂණය, ඉතිරි වාරික, නැවත සැලසුම්).' },
+      { d: 'certainty',  t: 'ප්‍රතිඵල සහ පාරිසරිකාත්මක කරුණු මගේ පාලනය යටතේ තිබෙනවිට මට හොඳට හැඟේ.' },
+
+      { d: 'variety',    t: 'නවකම සහ වෙනස මට ශක්තිය දේ.' },
+      { d: 'variety',    t: 'මා අහඹු තීරණ සහ නව දෙවල් උත්සාහ කිරීමට කැමතියි.' },
+      { d: 'variety',    t: 'සැලැස්මක පවතින ඒකාකාරතාව මට බෝරුයි; මට නිතරම යමක් වෙනස් කිරීමට කැමැත්තක් ඇත.' },
+
+      { d: 'significance', t: 'මා ගැන පිළිගැනීම් සහ ගෞරවය මට වැදගත්ය.' },
+      { d: 'significance', t: 'අනෙකුට වඩා කැපී පෙනීමට සහ මැනවින් කටයුතු කිරීමට ඉහළ උනන්දුවක් දක්වමි.' },
+      { d: 'significance', t: 'උපධි, සාර්ථකතා හෝ තත්ත්ව ලකුණු මට බලවත් ප්‍රේරණයක් වේ.' },
+
+      { d: 'connection', t: 'ආසන්න සබඳතා සහ අයත්කම් ඇතිවීම මගේ ජීවිතයේ මූලික කොටසකි.' },
+      { d: 'connection', t: 'මා පවුල, මිතුරන් සහ සමූහය වෙත කාලය ආයෝජනය කරමි.' },
+      { d: 'connection', t: 'සාමය සහ සම්බන්ධතාව මගේ තීරණ බොහෝවිට දිරිගන්වයි.' },
+
+      { d: 'growth',     t: 'සතත්ව අඛණ්ඩ අධ්‍යයනය සහ වර්ධනය මට අනිවාර්යය.' },
+      { d: 'growth',     t: 'කෞශල්‍ය හා හැකියාවන් ප්‍රසාරණය සඳහා ඉලක්ක නිරූපණය කර පසුපසට පිරික්සමි.' },
+      { d: 'growth',     t: 'ඉඩම්වීම හෝ සංවර්ධන රහිත වීම මට අසහනයට ලක්කරයි.' },
+
+      { d: 'contribution', t: 'අනෙකුට උපකාර කිරීමෙන් හෝ වැඩිමහල් අරමුණකට සේවය කිරීමෙන් මට සන්තෘප්තිය ලැබේ.' },
+      { d: 'contribution', t: 'අනෙකුට ඇති කළ ධනාත්මක බලපැවැත්ම මගින්ම මගේ සාර්ථකත්වය මැනිමි.' },
+      { d: 'contribution', t: 'මගේ අවශ්‍යතා පමණක් නොව ඉක්මවා යමින් ආපසු දීමට මං මාර්ග සොයමි.' },
+    ];
+
+    // Section B — Stress behaviors, 2 per driver (12 total)
+    const SECTION_B = [
+      { d: 'certainty', t: 'පීඩනයක් ඇති විට, මම නීති, රීති හෝ සූක්ෂ්ම කළමනාකරණයෙන් නැවත පාලනය ලබා ගැනීමට උත්සාහ කරමි.' },
+      { d: 'certainty', t: 'උපරිම වැඩබර කාලවල, මම අවදානම් වැළැක්විමට හා හඳුනන කාර්යයන්/පරිසර වෙත ආපසු යාමට ප්‍රවණ වෙමි.' },
+
+      { d: 'variety', t: 'පීඩනය යටතේ, මම වෙනස්කම් උද්දීපනය කරමි (කාර්ය මාරු ව්‍යාප්තිය, නවකම් සොයනවා, දෙය හල්ලනවා).'},
+      { d: 'variety', t: 'උපරිම කාලවල, මට නිදා නොගන්නා restlessness ඇති වී විහිළු හෝ උත්සාහය සොයමි.'},
+
+      { d: 'significance', t: 'පීඩනය යටතේ, මම මාම පෙන්වීමට හෝ වාදයේ ජය ගැනීමට අවශ්‍යතාවක් දැනෙයි.' },
+      { d: 'significance', t: 'දබලු ඇතිවිට, පිළිගැනීම නොලැබීම මට ත්‍රිගමනයක් වේ (තරඟකාරී හෝ ආරක්ෂාත්මක වීම).' },
+
+      { d: 'connection', t: 'පීඩනය යටතේ, විශ්වාසවන්ත පුද්ගලයන් නියමු කර සමගැසීම සොයමි; සමගිය ප්‍රමුඛ කරමි.' },
+      { d: 'connection', t: 'උපරිම කාලවල, ගැටපතෙන් ඉවතට පැනී යාමට හෝ සම්බන්ධතා මෘදු ලෙස තබා ගැනීමට අතිශය හිතපසුවීමක් දක්වමි.' },
+
+      { d: 'growth', t: 'පීඩනය යටතේ, මම ඉගෙනීම, විශ්ලේෂණය හෝ නව කුසලතා ගොඩනැගීම වැඩි කරමි.' },
+      { d: 'growth', t: 'උපරිම කාලවල, ගැටලුම අනුප්‍රේරණාත්මක අවස්ථා ලෙස නැවත හැඳින්වා පද්ධති හෝ මාම සංවර්ධනය කරමි.' },
+
+      { d: 'contribution', t: 'පීඩනය යටතේ, සමහරවිට මාගේ තැනින් අහිමිවූවත් මම අනෙකුට වැඩි සాయం කරමි.' },
+      { d: 'contribution', t: 'උපරිම කාලවල, කණ්ඩායමක් හෝ කාරණයක් උදෙසා බර බාර ගැනීමට ප්‍රවණ වෙමි.' },
+    ];
+
+    // Section C — Negative emotions mapping (1 per driver, 6 total)
+    const SECTION_C = [
+      { d: 'certainty', t: 'භයානක හැඟීමක් හෝ අතුරුදහන්කම (ආරක්ෂාව, ස්ථාවරතාව, පාලනය ගැන).' },
+      { d: 'variety', t: 'බෝරුකම හෝ restlessness (ජීවත්ව සිටීමට වෙනස/නවකම අවශ්‍යය).' },
+      { d: 'significance', t: 'ලජ්ජාව, අර්ෂ්‍යා හෝ අමනාපකම (ගෞරව/පිළිගැනීම අවශ්‍යය).' },
+      { d: 'connection', t: 'එකാകීභාවය හෝ ප්‍රතික්ෂේපයට සංවේදීභාවය (අයත්කම/පිළිගැනීම අවශ්‍යය).' },
+      { d: 'growth', t: 'නැටීමේ අසමත්භාවයට හෝ පරිපූර්ණවාදීභාවයට ඇති අසතුට (ප්‍රගතිය අවශ්‍යය).' },
+      { d: 'contribution', t: 'උදව් කමතින බවට හෝ ප්‍රභාවයක් නොතැබූ බවට ඇති දෝෂාභියෝගය.' },
+    ];
+
+    // -----------------------------
+    // Utilities
+    // -----------------------------
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const uid = () => Math.random().toString(36).slice(2, 10);
+
+    function todayISO() {
+      const d = new Date();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${d.getFullYear()}-${m}-${day}`;
+    }
+
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // -----------------------------
+    // Render Likert Blocks
+    // -----------------------------
+    function renderSection(containerId, items, sectionKey) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      items.forEach((item, idx) => {
+        const id = `${sectionKey}_${idx}`;
+        const row = document.createElement('div');
+        row.className = 'fieldset';
+        row.innerHTML = `
+          <div class="section-title">${idx+1}. ${escapeHtml(item.t)}</div>
+          <div class="scale">
+            <span>1</span>
+            <div class="options">
+              ${Array.from({length:7}).map((_,i)=>{
+                const value = i+1;
+                return `<label class="radio" title="${value}"><input type="radio" name="${id}" value="${value}" aria-label="${value}"></label>`;
+              }).join('')}
+            </div>
+            <span>7</span>
+          </div>`;
+        el.appendChild(row);
+      });
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    }
+
+    // -----------------------------
+    // Scoring Logic
+    // -----------------------------
+    function collectAnswers() {
+      const answers = { A: [], B: [], C: [] };
+      [SECTION_A, SECTION_B, SECTION_C].forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((_, idx) => {
+          const name = `${key}_${idx}`;
+          const val = document.querySelector(`input[name="${name}"]:checked`);
+          answers[key].push(val ? Number(val.value) : null);
+        });
+      });
+      return answers;
+    }
+
+    function validateAnswers(answers) {
+      const missing = [];
+      Object.entries(answers).forEach(([sec, arr]) => {
+        arr.forEach((v, i) => { if (v === null) missing.push(`${sec}.${i+1}`); });
+      });
+      return missing;
+    }
+
+    function scoreProfile(answers) {
+      const sums = Object.fromEntries(DRIVERS.map(d => [d.key, 0]));
+      // Section A
+      SECTION_A.forEach((item, i) => { sums[item.d] += (answers.A[i] || 0) * WEIGHTS.A; });
+      // Section B
+      SECTION_B.forEach((item, i) => { sums[item.d] += (answers.B[i] || 0) * WEIGHTS.B; });
+      // Section C
+      SECTION_C.forEach((item, i) => { sums[item.d] += (answers.C[i] || 0) * WEIGHTS.C; });
+
+      // Compute normalized percentages relative to max possible
+      const perDriverCounts = { certainty:0, variety:0, significance:0, connection:0, growth:0, contribution:0 };
+      SECTION_A.forEach(x=> perDriverCounts[x.d]++);
+      SECTION_B.forEach(x=> perDriverCounts[x.d]++);
+      SECTION_C.forEach(x=> perDriverCounts[x.d]++);
+      const perDriverMax = {};
+      for (const d of DRIVERS.map(x=>x.key)) {
+        const countA = SECTION_A.filter(x=>x.d===d).length * WEIGHTS.A;
+        const countB = SECTION_B.filter(x=>x.d===d).length * WEIGHTS.B;
+        const countC = SECTION_C.filter(x=>x.d===d).length * WEIGHTS.C;
+        perDriverMax[d] = 7 * (countA + countB + countC);
+      }
+
+      const perc = Object.fromEntries(Object.entries(sums).map(([k,v]) => [k, Math.round((v / perDriverMax[k]) * 100)]));
+
+      // Ranking & metrics
+      const ranked = DRIVERS.map(d=>({ key:d.key, label:d.label, color:d.color, score:sums[d.key], pct: perc[d.key] }))
+                            .sort((a,b)=> b.score - a.score);
+      const top = ranked[0];
+      const second = ranked[1];
+      const spread = Math.round(top.pct - second.pct);
+      const balanceIndex = computeBalanceIndex(perc); // 0..100 (higher = more balanced)
+
+      return { sums, perc, ranked, top, second, spread, balanceIndex, perDriverMax };
+    }
+
+    function computeBalanceIndex(perc) {
+      const values = DRIVERS.map(d => perc[d.key]);
+      const mean = values.reduce((a,b)=>a+b,0)/values.length;
+      const variance = values.reduce((a,b)=> a + Math.pow(b-mean,2), 0) / values.length;
+      const std = Math.sqrt(variance);
+      // Map std to 0..100 where lower std = higher balance
+      const normalized = Math.max(0, 100 - Math.min(100, std * 2));
+      return Math.round(normalized);
+    }
+
+    // -----------------------------
+    // UI Rendering of Results
+    // -----------------------------
+    function renderResults(profile) {
+      const resEl = $('#results');
+      resEl.innerHTML = '';
+
+      profile.ranked.forEach((r, idx) => {
+        const row = document.createElement('div');
+        row.className = 'result-row';
+        row.innerHTML = `
+          <div class="rank">${idx+1}. ${r.label}</div>
+          <div class="bar" aria-label="${r.label} score bar" role="img"><div style="width:${r.pct}%; background: linear-gradient(90deg, ${r.color}, rgba(255,255,255,.2));"></div></div>
+          <div style="text-align:right; font-weight:700;">${r.pct}%</div>
+        `;
+        resEl.appendChild(row);
+      });
+
+      // KPIs
+      $('#kpiTop').textContent = profile.top.label;
+      $('#kpiSpread').textContent = profile.spread + '%';
+      $('#kpiBalance').textContent = profile.balanceIndex + '/100';
+
+      // Interpretation text
+      const lower = ['certainty','variety','significance','connection'];
+      const higher = ['growth','contribution'];
+      const top2 = new Set([profile.top.key, profile.second.key]);
+      const leaning = [...top2].some(k=>higher.includes(k)) ? 'වර්ධනප්‍රධාන' : 'ස්ථාවර/කිර්තිනාම ප්‍රධාන';
+
+      $('#interpretation').innerHTML = `
+        <div class="chips" style="margin-bottom:8px;">
+          <div class="pill">ඉහළ යුගලය: <b>${profile.top.label}</b> + <b>${profile.second.label}</b></div>
+          <div class="pill">ප්‍රොෆයිල් ප්‍රවණතාව: <b>${leaning}</b></div>
+          <div class="pill">අවබෝධය: <b>${profile.spread >= 10 ? 'වලංගු' : profile.spread >= 5 ? 'මධ්‍යම' : 'සුළු'} ආධිපත්‍ය</b></div>
+        </div>
+        <div>• <b>${profile.top.label}</b> බොහෝ තීරණ මඟ පෙන්වන්නා වී ඇති හැක. පීඩනයේදී එහි සෙවුම් පැති (shadow patterns) සොයාබලා සුරැකෙන්න. අනෙක් අවශ්‍යතා අදිනලයෙන් පෝෂණය කරමින් සමතුලිත කරන්න (විශේෂයෙන් ${higher.includes(profile.top.key) ? 'නිශ්චිතතාව/සම්බන්ධතාව' : 'වර්ධනය/දායකත්වය'}).
+        <br/>• ඉහළ-2 එකතුව විරුද්ධතා පැහැදිලි කරයි (උදා., නිශ්චිතතාව හා විවිධතාව). ස්වභාවිකව විරුද්ධ නම්, ආරක්ෂිත නවකමක් ඇතුළත් සැලසුම් නිර්මාණය කරන්න.
+        <br/>• ${profile.balanceIndex}/100 ක සමතුලිත දර්ශකය ${profile.balanceIndex > 70 ? 'හොඳින් වටින' : profile.balanceIndex > 40 ? 'සම්පූර්ණ නොවූ' : 'කෙලිසැවිලි යැයි පෙනෙන'} ප්‍රොෆයිලයකට සංකේත කරයි. අඩු ලකුණු ලැබූ අවශ්‍යතා සතිපතා පෝෂණය සඳහා කර්ම රූප සැලසුම් කරන්න.
+        </div>
+      `;
+    }
+
+    // -----------------------------
+    // Persistence (Local Storage)
+    // -----------------------------
+    const STORAGE_KEY = 'hn_assessments_v1';
+
+    function loadAll() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+    }
+    function saveAll(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function saveCurrent(profile) {
+      const id = uid();
+      const record = {
+        id,
+        when: new Date().toISOString(),
+        meta: getMeta(),
+        answers: collectAnswers(),
+        profile
+      };
+      const all = loadAll();
+      all.unshift(record);
+      saveAll(all);
+      renderSaved();
+      toast('දේශීයව සුරකි ඇත.');
+    }
+
+    function renderSaved() {
+      const wrap = $('#savedList');
+      const data = loadAll();
+      wrap.innerHTML = '';
+      if (!data.length) { wrap.innerHTML = '<div class="muted">තවම ගබඩා කළ ඇගයීම් නොමැත.</div>'; return; }
+      data.forEach(rec => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        const m = rec.meta;
+        const when = new Date(rec.when).toLocaleString();
+        const top = rec.profile?.top?.label || '–';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+            <div>
+              <div style="font-weight:800;">${escapeHtml(m.name || 'නිරනාමික')}</div>
+              <div class="muted">${escapeHtml(m.role || '')} · ${escapeHtml(m.email || '')}</div>
+              <div class="chips" style="margin-top:6px;">
+                <span class="chip">${when}</span>
+                <span class="chip">ඉහළ: ${top}</span>
+                <span class="chip">සමතුලිතතා: ${rec.profile?.balanceIndex}/100</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" data-load="${rec.id}">පූරණය</button>
+              <button class="btn-danger" data-del="${rec.id}">මකන්න</button>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+
+      // wire buttons
+      wrap.querySelectorAll('[data-load]').forEach(b=> b.addEventListener('click', ()=>{
+        const id = b.getAttribute('data-load');
+        const rec = loadAll().find(x=>x.id===id);
+        if (!rec) return;
+        setMeta(rec.meta);
+        setAnswers(rec.answers);
+        renderResults(rec.profile);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }));
+      wrap.querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', ()=>{
+        const id = b.getAttribute('data-del');
+        const rest = loadAll().filter(x=>x.id!==id);
+        saveAll(rest);
+        renderSaved();
+      }));
+    }
+
+    // -----------------------------
+    // Meta fields
+    // -----------------------------
+    function getMeta() {
+      return {
+        name: $('#name').value.trim(),
+        email: $('#email').value.trim(),
+        role: $('#role').value.trim(),
+        date: $('#date').value.trim()
+      };
+    }
+    function setMeta(meta) {
+      $('#name').value = meta.name || '';
+      $('#email').value = meta.email || '';
+      $('#role').value = meta.role || '';
+      $('#date').value = meta.date || '';
+    }
+
+    // -----------------------------
+    // Answer controls
+    // -----------------------------
+    function setAnswers(answers) {
+      [SECTION_A, SECTION_B, SECTION_C].forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((_, idx) => {
+          const name = `${key}_${idx}`;
+          const v = answers[key][idx];
+          const el = document.querySelector(`input[name="${name}"][value="${v}"]`);
+          if (el) el.checked = true;
+        });
+      });
+    }
+    function resetAnswers() {
+      $$('input[type="radio"]').forEach(i => i.checked = false);
+      $('#results').innerHTML='';
+      $('#interpretation').innerHTML='';
+      $('#errors').textContent='';
+      $('#kpiTop').textContent='–';
+      $('#kpiSpread').textContent='–';
+      $('#kpiBalance').textContent='–';
+    }
+
+    // -----------------------------
+    // CSV Export
+    // -----------------------------
+    function exportCSV(profile) {
+      const meta = getMeta();
+      // Keep technical headers in English to preserve downstream compatibility.
+      const headers = ['name','email','role','date', ...DRIVERS.map(d=>`${d.key}_pct`), ...DRIVERS.map(d=>`${d.key}_raw`), 'top','second','spread','balance'];
+      const values = [
+        meta.name, meta.email, meta.role, meta.date,
+        ...DRIVERS.map(d=>profile.perc[d.key]),
+        ...DRIVERS.map(d=>Math.round(profile.sums[d.key]*100)/100),
+        profile.top.label, profile.second.label, profile.spread, profile.balanceIndex
+      ];
+      const csv = [headers.join(','), values.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(',')].join('\n');
+      const fname = `human_drivers_${(meta.name||'anonymous').toLowerCase().replace(/[^a-z0-9]+/g,'_')}_${Date.now()}.csv`;
+      download(fname, csv);
+    }
+
+    // -----------------------------
+    // Micro UX helpers
+    // -----------------------------
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.textContent = msg;
+      el.style.position='fixed';
+      el.style.bottom='16px';
+      el.style.right='16px';
+      el.style.background='#111827';
+      el.style.border='1px solid var(--border)';
+      el.style.padding='10px 12px';
+      el.style.borderRadius='10px';
+      el.style.boxShadow='0 10px 30px rgba(0,0,0,.3)';
+      document.body.appendChild(el);
+      setTimeout(()=>{ el.remove(); }, 1800);
+    }
+
+    // -----------------------------
+    // Theme toggle (dark only with subtle alt)
+    // -----------------------------
+    let themeState = 'dark';
+    function toggleTheme() {
+      if (themeState==='dark') {
+        document.documentElement.style.setProperty('--bg', '#f6f7fb');
+        document.documentElement.style.setProperty('--panel', '#ffffff');
+        document.documentElement.style.setProperty('--text', '#0f172a');
+        document.documentElement.style.setProperty('--muted', '#52607a');
+        document.documentElement.style.setProperty('--card', '#ffffff');
+        document.documentElement.style.setProperty('--border', '#e5e7f0');
+        themeState = 'light';
+      } else {
+        document.documentElement.style.setProperty('--bg', '#0b0c10');
+        document.documentElement.style.setProperty('--panel', '#121318');
+        document.documentElement.style.setProperty('--text', '#e9edf4');
+        document.documentElement.style.setProperty('--muted', '#a3aab9');
+        document.documentElement.style.setProperty('--card', '#161823');
+        document.documentElement.style.setProperty('--border', '#24273a');
+        themeState = 'dark';
+      }
+    }
+
+    // -----------------------------
+    // Wiring
+    // -----------------------------
+    function init() {
+      renderSection('sectionA', SECTION_A, 'A');
+      renderSection('sectionB', SECTION_B, 'B');
+      renderSection('sectionC', SECTION_C, 'C');
+
+      // Defaults
+      $('#date').value = todayISO();
+
+      $('#calcBtn').addEventListener('click', () => {
+        const answers = collectAnswers();
+        const missing = validateAnswers(answers);
+        if (missing.length) {
+          $('#errors').textContent = `කරුණාකර කොටස් A, B හා C වල සියළු අයිಟම්වලට පිළිතුරු දෙන්න (අපුරු: ${missing.length}).`;
+          toast('සමහර අයිටම් අසම්පූර්ණයි.');
+          return;
+        } else {
+          $('#errors').textContent = '';
+        }
+        const profile = scoreProfile(answers);
+        renderResults(profile);
+        // attach export button to current profile
+        $('#exportBtn').onclick = () => exportCSV(profile);
+        $('#saveBtn').onclick = () => saveCurrent(profile);
+      });
+
+      $('#resetBtn').addEventListener('click', resetAnswers);
+      $('#demoBtn').addEventListener('click', () => autofillDemo());
+      $('#printBtn').addEventListener('click', () => window.print());
+      $('#themeBtn').addEventListener('click', toggleTheme);
+      $('#newBtn').addEventListener('click', () => { setMeta({name:'',email:'',role:'',date:todayISO()}); resetAnswers(); });
+
+      renderSaved();
+
+      // Hints
+      $('#hints').innerHTML = `
+        <span class="chip">1–7 Likert මාපකය</span>
+        <span class="chip">පීඩන අයිටම් බරපතල කිරීම</span>
+        <span class="chip">දේශීය සුරක්ෂණ</span>
+        <span class="chip">CSV නිර්යාත</span>
+        <span class="chip">PDF වෙත මුද්‍රණය</span>
+      `;
+    }
+
+    // Demo autofill for quick testing
+    function autofillDemo() {
+      // fill with mid-high variance pattern favoring Growth + Variety
+      const sets = [SECTION_A, SECTION_B, SECTION_C];
+      sets.forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((item, idx) => {
+          // base value
+          let v = 4;
+          if (['growth','variety'].includes(item.d)) v = 6;
+          if (item.d==='certainty') v = 3;
+          if (sIdx===1 && item.d==='growth') v = 7; // stressed into growth
+          const el = document.querySelector(`input[name="${key}_${idx}"][value="${v}"]`);
+          if (el) el.checked = true;
+        });
+      });
+      toast('ඩෙමෝ පිළිතුරු පුරවා ඇත.');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
