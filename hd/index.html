@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Human Drivers Assessment – 6 Human Needs (Single‑File SaaS)</title>
+  <meta name="description" content="Professional assessment to evaluate dominant human drivers (Tony Robbins' 6 Human Needs) including stress behaviors and negative emotion patterns. Single-file, GitHub Pages-ready." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #121318;
+      --muted: #a3aab9;
+      --text: #e9edf4;
+      --accent: #5b9cff;
+      --accent-2: #6ee7b7;
+      --warn: #ffb86b;
+      --danger: #ff6b6b;
+      --ok: #22c55e;
+      --card: #161823;
+      --border: #24273a;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 16px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo { width:36px; height:36px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#0a0a0a; }
+    .title { font-size: clamp(18px, 3vw, 22px); font-weight: 700; letter-spacing: .3px; }
+    .subtitle { color: var(--muted); font-size: 13px; }
+    .toolbar { display:flex; gap:10px; flex-wrap: wrap; }
+    button, .btn {
+      appearance:none; border:1px solid var(--border); background: #10121a; color: var(--text);
+      padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; transition:.2s ease; font-size: 14px;
+    }
+    button:hover, .btn:hover { transform: translateY(-1px); border-color: #2e3250; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #3f7eff); border-color: transparent; color:#0a0a0a; }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost { background: #0f1118; }
+    .btn-danger { background: #1c1111; border-color: #3b1a1a; color: #ffb3b3; }
+    .grid { display:grid; gap:16px; }
+    .col-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { background: var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; }
+    .card h3 { margin: 0 0 6px; font-size: 18px; }
+    .card p { margin: 6px 0 10px; color: var(--muted); font-size: 14px; }
+    .fieldset { border-top:1px dashed var(--border); padding-top:10px; margin-top:8px; }
+    label { display:block; font-size:14px; margin-bottom: 6px; }
+    input[type="text"], input[type="email"], select {
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#0e1017; color:var(--text);
+    }
+    .scale { display:flex; gap:8px; align-items:center; flex-wrap: wrap; }
+    .scale span { color: var(--muted); font-size: 12px; }
+    .options { display:grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap:6px; width:100%; }
+    .radio { display:grid; place-items:center; }
+    .radio input { appearance:none; width:38px; height:34px; border-radius:8px; border:1px solid var(--border); background:#0e1017; cursor:pointer; }
+    .radio input:checked { outline: 2px solid var(--accent); border-color: #3c4a7a; background: #10152a; }
+    .section-title { font-size: 16px; font-weight: 700; letter-spacing:.3px; margin: 2px 0 8px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#0f1a12; border:1px solid #213424; color:#9ee0b3; font-weight:700; font-size:12px; }
+    .stats { display:grid; gap:12px; }
+    .bar { background:#0f1118; border:1px solid var(--border); border-radius:10px; overflow:hidden; height:14px; }
+    .bar > div { height:100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+    .result-row { display:grid; grid-template-columns: 150px 1fr 70px; align-items:center; gap:10px; }
+    .result-row span { font-size: 13px; }
+    .rank { font-weight:800; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); background:#0f1118; font-size:12px; color:var(--muted); }
+    .footer { color: var(--muted); font-size: 12px; margin-top: 20px; text-align:center; }
+    .error { color: var(--danger); font-size: 13px; margin-top: 8px; }
+    .success { color: var(--accent-2); font-size: 13px; }
+    .hidden { display:none !important; }
+    .divider { height:1px; background: var(--border); margin: 8px 0; }
+    .chips { display:flex; gap:8px; flex-wrap: wrap; }
+    .chip { padding:6px 10px; background:#0f1118; border:1px solid var(--border); border-radius:999px; font-size:12px; }
+    .kpis { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; }
+    .kpi { background: #0f1118; border:1px solid var(--border); border-radius:12px; padding:12px; }
+    .kpi h4 { margin:0; font-size:13px; color: var(--muted); }
+    .kpi .num { font-size: 22px; font-weight: 800; margin-top: 6px; }
+    .link { color: var(--accent-2); text-decoration: none; }
+    @media (max-width: 860px) { .col-2 { grid-template-columns: 1fr; } .result-row { grid-template-columns: 120px 1fr 60px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">HN</div>
+        <div>
+          <div class="title">Human Drivers Assessment</div>
+          <div class="subtitle">Tony Robbins' 6 Human Needs · stress behaviors · negative emotion patterns</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="newBtn" class="btn">New</button>
+        <button id="saveBtn" class="btn">Save</button>
+        <button id="exportBtn" class="btn">Export CSV</button>
+        <button id="printBtn" class="btn">Print / PDF</button>
+        <button id="themeBtn" class="btn">☾ Theme</button>
+      </div>
+    </header>
+
+    <!-- Respondent Info -->
+    <section class="card">
+      <h3>Respondent</h3>
+      <p class="muted">Optional contact fields help you organize results (stored only in your browser unless exported).</p>
+      <div class="grid col-2">
+        <div>
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="e.g., Alex Müller" />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="e.g., alex@example.com" />
+        </div>
+        <div>
+          <label for="role">Role / Context</label>
+          <input id="role" type="text" placeholder="e.g., Product Manager, Interview, Coaching" />
+        </div>
+        <div>
+          <label for="date">Date</label>
+          <input id="date" type="text" placeholder="YYYY-MM-DD" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Assessment Form -->
+    <section class="grid col-2">
+      <div class="card">
+        <h3>Section A · Everyday Motivations</h3>
+        <p class="muted">Rate each statement from <b>1 (Strongly Disagree)</b> to <b>7 (Strongly Agree)</b>.</p>
+        <div id="sectionA"></div>
+      </div>
+
+      <div class="card">
+        <h3>Section B · Behavior Under Stress</h3>
+        <p class="muted">When under pressure, how likely are these? <b>1 (Never)</b> to <b>7 (Always)</b>.</p>
+        <div id="sectionB"></div>
+      </div>
+
+      <div class="card">
+        <h3>Section C · Negative Emotion Patterns</h3>
+        <p class="muted">How often do you experience these emotions? <b>1 (Rarely)</b> to <b>7 (Very Often)</b>.</p>
+        <div id="sectionC"></div>
+      </div>
+
+      <div class="card">
+        <h3>Scoring & Insights</h3>
+        <p class="muted">Click <b>Calculate</b> to see dominant drivers, balanced profile, and coaching notes. You can save multiple assessments locally.</p>
+        <div class="chips" id="hints"></div>
+        <div class="divider"></div>
+        <div class="kpis">
+          <div class="kpi"><h4>Top Driver</h4><div class="num" id="kpiTop">–</div></div>
+          <div class="kpi"><h4>Top 2 Spread</h4><div class="num" id="kpiSpread">–</div></div>
+          <div class="kpi"><h4>Balance Index</h4><div class="num" id="kpiBalance">–</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="stats" id="results"></div>
+        <div id="interpretation" class="muted" style="margin-top:10px;"></div>
+        <div id="errors" class="error"></div>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="calcBtn" class="btn-primary">Calculate</button>
+          <button id="resetBtn" class="btn-ghost">Reset Answers</button>
+          <button id="demoBtn" class="btn-ghost">Fill Demo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Assessments -->
+    <section class="card">
+      <h3>Saved Assessments (Local)</h3>
+      <p class="muted">All data stays in your browser until you export it. Click an item to load it.</p>
+      <div id="savedList" class="grid"></div>
+    </section>
+
+    <p class="footer">No tracking, no servers. Single‑file app you can host on GitHub Pages. © 2025 — Human Drivers Toolkit.</p>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Domain Model & Configuration
+    // -----------------------------
+    const DRIVERS = [
+      { key: 'certainty', label: 'Certainty', color: '#7aa2ff' },
+      { key: 'variety', label: 'Variety', color: '#71e7d1' },
+      { key: 'significance', label: 'Significance', color: '#f4ac52' },
+      { key: 'connection', label: 'Love & Connection', color: '#f585ae' },
+      { key: 'growth', label: 'Growth', color: '#a9e34b' },
+      { key: 'contribution', label: 'Contribution', color: '#b1a7ff' }
+    ];
+
+    // Section weights allow emphasis adjustment without touching items
+    const WEIGHTS = {
+      A: 1.00,  // Everyday motivations
+      B: 1.30,  // Behavior under stress (diagnostically potent)
+      C: 1.10   // Negative emotion patterns
+    };
+
+    // Section A — 3 statements per driver (18 total)
+    const SECTION_A = [
+      { d: 'certainty',  t: 'I prefer stability, clear plans, and predictability in my life.' },
+      { d: 'certainty',  t: 'I take steps to reduce risk (e.g., insurance, buffers, backup plans).' },
+      { d: 'certainty',  t: 'I feel best when I’m in control of outcomes and environments.' },
+
+      { d: 'variety',    t: 'I seek novelty and change to feel energized.' },
+      { d: 'variety',    t: 'I enjoy spontaneous decisions and trying new things.' },
+      { d: 'variety',    t: 'Routine bores me; I like switching things up often.' },
+
+      { d: 'significance', t: 'Being respected and recognized matters a lot to me.' },
+      { d: 'significance', t: 'I work hard to excel and stand out from others.' },
+      { d: 'significance', t: 'Titles, achievements, or status give me strong motivation.' },
+
+      { d: 'connection', t: 'Close relationships and a sense of belonging are central to my life.' },
+      { d: 'connection', t: 'I invest time in family, friends, and community.' },
+      { d: 'connection', t: 'Harmony and connection often guide my decisions.' },
+
+      { d: 'growth',     t: 'Continuous learning and improvement are non‑negotiable for me.' },
+      { d: 'growth',     t: 'I set and track goals to expand my skills and capacity.' },
+      { d: 'growth',     t: 'Feeling stuck or stagnant is intolerable to me.' },
+
+      { d: 'contribution', t: 'I feel fulfilled by helping others or serving a bigger purpose.' },
+      { d: 'contribution', t: 'I measure success by the positive impact I have on others.' },
+      { d: 'contribution', t: 'I look for ways to give back beyond my own needs.' },
+    ];
+
+    // Section B — Stress behaviors, 2 per driver (12 total)
+    const SECTION_B = [
+      { d: 'certainty', t: 'Under stress, I try to regain control with rules, routines, or micromanagement.' },
+      { d: 'certainty', t: 'When pressured, I avoid risks and retreat to familiar tasks/environments.' },
+
+      { d: 'variety', t: 'Under stress, I create change (switch tasks fast, seek novelty, shake things up).'},
+      { d: 'variety', t: 'When pressured, I get restless and look for distraction or excitement.'},
+
+      { d: 'significance', t: 'Under stress, I feel the need to prove myself or win arguments.' },
+      { d: 'significance', t: 'When pressured, lack of recognition triggers me (I become competitive or defensive).' },
+
+      { d: 'connection', t: 'Under stress, I seek comfort in trusted people; I prioritize harmony.' },
+      { d: 'connection', t: 'When pressured, I avoid conflict or over‑accommodate to keep relationships smooth.' },
+
+      { d: 'growth', t: 'Under stress, I double down on learning, analysis, or building new skills.' },
+      { d: 'growth', t: 'When pressured, I reframe problems as opportunities to improve systems or myself.' },
+
+      { d: 'contribution', t: 'Under stress, I help others more, sometimes at my own expense.' },
+      { d: 'contribution', t: 'When pressured, I take on burdens to support the team or a cause.' },
+    ];
+
+    // Section C — Negative emotions mapping (1 per driver, 6 total)
+    const SECTION_C = [
+      { d: 'certainty', t: 'Anxiety or fear (about safety, stability, control).' },
+      { d: 'variety', t: 'Boredom or restlessness (needing change to feel alive).' },
+      { d: 'significance', t: 'Shame, jealousy, or resentment (needing respect/recognition).' },
+      { d: 'connection', t: 'Loneliness or rejection sensitivity (needing belonging/acceptance).' },
+      { d: 'growth', t: 'Frustration at stagnation or perfectionism (needing progress).' },
+      { d: 'contribution', t: 'Guilt for not helping enough or not making an impact.' },
+    ];
+
+    // -----------------------------
+    // Utilities
+    // -----------------------------
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const uid = () => Math.random().toString(36).slice(2, 10);
+
+    function todayISO() {
+      const d = new Date();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${d.getFullYear()}-${m}-${day}`;
+    }
+
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // -----------------------------
+    // Render Likert Blocks
+    // -----------------------------
+    function renderSection(containerId, items, sectionKey) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = '';
+      items.forEach((item, idx) => {
+        const id = `${sectionKey}_${idx}`;
+        const row = document.createElement('div');
+        row.className = 'fieldset';
+        row.innerHTML = `
+          <div class="section-title">${idx+1}. ${escapeHtml(item.t)}</div>
+          <div class="scale">
+            <span>1</span>
+            <div class="options">
+              ${Array.from({length:7}).map((_,i)=>{
+                const value = i+1;
+                return `<label class="radio" title="${value}"><input type="radio" name="${id}" value="${value}" aria-label="${value}"></label>`;
+              }).join('')}
+            </div>
+            <span>7</span>
+          </div>`;
+        el.appendChild(row);
+      });
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    }
+
+    // -----------------------------
+    // Scoring Logic
+    // -----------------------------
+    function collectAnswers() {
+      const answers = { A: [], B: [], C: [] };
+      [SECTION_A, SECTION_B, SECTION_C].forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((_, idx) => {
+          const name = `${key}_${idx}`;
+          const val = document.querySelector(`input[name="${name}"]:checked`);
+          answers[key].push(val ? Number(val.value) : null);
+        });
+      });
+      return answers;
+    }
+
+    function validateAnswers(answers) {
+      const missing = [];
+      Object.entries(answers).forEach(([sec, arr]) => {
+        arr.forEach((v, i) => { if (v === null) missing.push(`${sec}.${i+1}`); });
+      });
+      return missing;
+    }
+
+    function scoreProfile(answers) {
+      const sums = Object.fromEntries(DRIVERS.map(d => [d.key, 0]));
+      // Section A
+      SECTION_A.forEach((item, i) => { sums[item.d] += (answers.A[i] || 0) * WEIGHTS.A; });
+      // Section B
+      SECTION_B.forEach((item, i) => { sums[item.d] += (answers.B[i] || 0) * WEIGHTS.B; });
+      // Section C
+      SECTION_C.forEach((item, i) => { sums[item.d] += (answers.C[i] || 0) * WEIGHTS.C; });
+
+      // Compute normalized percentages relative to max possible
+      const maxA = 7 * WEIGHTS.A * SECTION_A.filter(x=>true).length / 6; // per driver 3 items => 3/6 of total? Better compute per driver precisely below
+      // We'll compute per-driver max directly to be exact
+      const perDriverCounts = { certainty:0, variety:0, significance:0, connection:0, growth:0, contribution:0 };
+      SECTION_A.forEach(x=> perDriverCounts[x.d]++);
+      SECTION_B.forEach(x=> perDriverCounts[x.d]++);
+      SECTION_C.forEach(x=> perDriverCounts[x.d]++);
+      const perDriverMax = {};
+      for (const d of DRIVERS.map(x=>x.key)) {
+        const countA = SECTION_A.filter(x=>x.d===d).length * WEIGHTS.A;
+        const countB = SECTION_B.filter(x=>x.d===d).length * WEIGHTS.B;
+        const countC = SECTION_C.filter(x=>x.d===d).length * WEIGHTS.C;
+        perDriverMax[d] = 7 * (countA + countB + countC);
+      }
+
+      const perc = Object.fromEntries(Object.entries(sums).map(([k,v]) => [k, Math.round((v / perDriverMax[k]) * 100)]));
+
+      // Ranking & metrics
+      const ranked = DRIVERS.map(d=>({ key:d.key, label:d.label, color:d.color, score:sums[d.key], pct: perc[d.key] }))
+                            .sort((a,b)=> b.score - a.score);
+      const top = ranked[0];
+      const second = ranked[1];
+      const spread = Math.round(top.pct - second.pct);
+      const balanceIndex = computeBalanceIndex(perc); // 0..100 (higher = more balanced)
+
+      return { sums, perc, ranked, top, second, spread, balanceIndex, perDriverMax };
+    }
+
+    function computeBalanceIndex(perc) {
+      const values = DRIVERS.map(d => perc[d.key]);
+      const mean = values.reduce((a,b)=>a+b,0)/values.length;
+      const variance = values.reduce((a,b)=> a + Math.pow(b-mean,2), 0) / values.length;
+      const std = Math.sqrt(variance);
+      // Map std to 0..100 where lower std = higher balance
+      const normalized = Math.max(0, 100 - Math.min(100, std * 2));
+      return Math.round(normalized);
+    }
+
+    // -----------------------------
+    // UI Rendering of Results
+    // -----------------------------
+    function renderResults(profile) {
+      const resEl = $('#results');
+      resEl.innerHTML = '';
+
+      profile.ranked.forEach((r, idx) => {
+        const row = document.createElement('div');
+        row.className = 'result-row';
+        row.innerHTML = `
+          <div class="rank">${idx+1}. ${r.label}</div>
+          <div class="bar" aria-label="${r.label} score bar" role="img"><div style="width:${r.pct}%; background: linear-gradient(90deg, ${r.color}, rgba(255,255,255,.2));"></div></div>
+          <div style="text-align:right; font-weight:700;">${r.pct}%</div>
+        `;
+        resEl.appendChild(row);
+      });
+
+      // KPIs
+      $('#kpiTop').textContent = profile.top.label;
+      $('#kpiSpread').textContent = profile.spread + '%';
+      $('#kpiBalance').textContent = profile.balanceIndex + '/100';
+
+      // Interpretation text
+      const lower = ['certainty','variety','significance','connection'];
+      const higher = ['growth','contribution'];
+      const top2 = new Set([profile.top.key, profile.second.key]);
+      const leaning = [...top2].some(k=>higher.includes(k)) ? 'growth‑oriented' : 'stability/recognition‑oriented';
+
+      $('#interpretation').innerHTML = `
+        <div class="chips" style="margin-bottom:8px;">
+          <div class="pill">Top Pair: <b>${profile.top.label}</b> + <b>${profile.second.label}</b></div>
+          <div class="pill">Profile Lean: <b>${leaning}</b></div>
+          <div class="pill">Insight: <b>${profile.spread >= 10 ? 'Strong' : profile.spread >= 5 ? 'Moderate' : 'Subtle'}</b> dominance</div>
+        </div>
+        <div>• <b>${profile.top.label}</b> likely governs most decisions. When stressed, watch for its shadow patterns. Balance by intentionally feeding the other needs (especially ${higher.includes(profile.top.key) ? 'Certainty/Connection' : 'Growth/Contribution'}).
+        <br/>• Top‑2 combination often explains conflicts (e.g., Certainty vs Variety). If these two are naturally at odds, design routines that include safe novelty.
+        <br/>• Balance Index of ${profile.balanceIndex}/100 indicates ${profile.balanceIndex > 70 ? 'a well‑rounded' : profile.balanceIndex > 40 ? 'a somewhat uneven' : 'a highly spiky'} profile. Consider rituals to nourish lower‑scoring needs weekly.
+        </div>
+      `;
+    }
+
+    // -----------------------------
+    // Persistence (Local Storage)
+    // -----------------------------
+    const STORAGE_KEY = 'hn_assessments_v1';
+
+    function loadAll() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+    }
+    function saveAll(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function saveCurrent(profile) {
+      const id = uid();
+      const record = {
+        id,
+        when: new Date().toISOString(),
+        meta: getMeta(),
+        answers: collectAnswers(),
+        profile
+      };
+      const all = loadAll();
+      all.unshift(record);
+      saveAll(all);
+      renderSaved();
+      toast('Saved locally.');
+    }
+
+    function renderSaved() {
+      const wrap = $('#savedList');
+      const data = loadAll();
+      wrap.innerHTML = '';
+      if (!data.length) { wrap.innerHTML = '<div class="muted">No saved assessments yet.</div>'; return; }
+      data.forEach(rec => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        const m = rec.meta;
+        const when = new Date(rec.when).toLocaleString();
+        const top = rec.profile?.top?.label || '–';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+            <div>
+              <div style="font-weight:800;">${escapeHtml(m.name || 'Anonymous')}</div>
+              <div class="muted">${escapeHtml(m.role || '')} · ${escapeHtml(m.email || '')}</div>
+              <div class="chips" style="margin-top:6px;">
+                <span class="chip">${when}</span>
+                <span class="chip">Top: ${top}</span>
+                <span class="chip">Balance: ${rec.profile?.balanceIndex}/100</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" data-load="${rec.id}">Load</button>
+              <button class="btn-danger" data-del="${rec.id}">Delete</button>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+
+      // wire buttons
+      wrap.querySelectorAll('[data-load]').forEach(b=> b.addEventListener('click', ()=>{
+        const id = b.getAttribute('data-load');
+        const rec = loadAll().find(x=>x.id===id);
+        if (!rec) return;
+        setMeta(rec.meta);
+        setAnswers(rec.answers);
+        renderResults(rec.profile);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }));
+      wrap.querySelectorAll('[data-del]').forEach(b=> b.addEventListener('click', ()=>{
+        const id = b.getAttribute('data-del');
+        const rest = loadAll().filter(x=>x.id!==id);
+        saveAll(rest);
+        renderSaved();
+      }));
+    }
+
+    // -----------------------------
+    // Meta fields
+    // -----------------------------
+    function getMeta() {
+      return {
+        name: $('#name').value.trim(),
+        email: $('#email').value.trim(),
+        role: $('#role').value.trim(),
+        date: $('#date').value.trim()
+      };
+    }
+    function setMeta(meta) {
+      $('#name').value = meta.name || '';
+      $('#email').value = meta.email || '';
+      $('#role').value = meta.role || '';
+      $('#date').value = meta.date || '';
+    }
+
+    // -----------------------------
+    // Answer controls
+    // -----------------------------
+    function setAnswers(answers) {
+      [SECTION_A, SECTION_B, SECTION_C].forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((_, idx) => {
+          const name = `${key}_${idx}`;
+          const v = answers[key][idx];
+          const el = document.querySelector(`input[name="${name}"][value="${v}"]`);
+          if (el) el.checked = true;
+        });
+      });
+    }
+    function resetAnswers() {
+      $$('input[type="radio"]').forEach(i => i.checked = false);
+      $('#results').innerHTML='';
+      $('#interpretation').innerHTML='';
+      $('#errors').textContent='';
+      $('#kpiTop').textContent='–';
+      $('#kpiSpread').textContent='–';
+      $('#kpiBalance').textContent='–';
+    }
+
+    // -----------------------------
+    // CSV Export
+    // -----------------------------
+    function exportCSV(profile) {
+      const meta = getMeta();
+      const headers = ['name','email','role','date', ...DRIVERS.map(d=>`${d.key}_pct`), ...DRIVERS.map(d=>`${d.key}_raw`), 'top','second','spread','balance'];
+      const values = [
+        meta.name, meta.email, meta.role, meta.date,
+        ...DRIVERS.map(d=>profile.perc[d.key]),
+        ...DRIVERS.map(d=>Math.round(profile.sums[d.key]*100)/100),
+        profile.top.label, profile.second.label, profile.spread, profile.balanceIndex
+      ];
+      const csv = [headers.join(','), values.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(',')].join('\n');
+      const fname = `human_drivers_${(meta.name||'anonymous').toLowerCase().replace(/[^a-z0-9]+/g,'_')}_${Date.now()}.csv`;
+      download(fname, csv);
+    }
+
+    // -----------------------------
+    // Micro UX helpers
+    // -----------------------------
+    function toast(msg) {
+      const el = document.createElement('div');
+      el.textContent = msg;
+      el.style.position='fixed';
+      el.style.bottom='16px';
+      el.style.right='16px';
+      el.style.background='#111827';
+      el.style.border='1px solid var(--border)';
+      el.style.padding='10px 12px';
+      el.style.borderRadius='10px';
+      el.style.boxShadow='0 10px 30px rgba(0,0,0,.3)';
+      document.body.appendChild(el);
+      setTimeout(()=>{ el.remove(); }, 1800);
+    }
+
+    // -----------------------------
+    // Theme toggle (dark only with subtle alt)
+    // -----------------------------
+    let themeState = 'dark';
+    function toggleTheme() {
+      if (themeState==='dark') {
+        document.documentElement.style.setProperty('--bg', '#f6f7fb');
+        document.documentElement.style.setProperty('--panel', '#ffffff');
+        document.documentElement.style.setProperty('--text', '#0f172a');
+        document.documentElement.style.setProperty('--muted', '#52607a');
+        document.documentElement.style.setProperty('--card', '#ffffff');
+        document.documentElement.style.setProperty('--border', '#e5e7f0');
+        themeState = 'light';
+      } else {
+        document.documentElement.style.setProperty('--bg', '#0b0c10');
+        document.documentElement.style.setProperty('--panel', '#121318');
+        document.documentElement.style.setProperty('--text', '#e9edf4');
+        document.documentElement.style.setProperty('--muted', '#a3aab9');
+        document.documentElement.style.setProperty('--card', '#161823');
+        document.documentElement.style.setProperty('--border', '#24273a');
+        themeState = 'dark';
+      }
+    }
+
+    // -----------------------------
+    // Wiring
+    // -----------------------------
+    function init() {
+      renderSection('sectionA', SECTION_A, 'A');
+      renderSection('sectionB', SECTION_B, 'B');
+      renderSection('sectionC', SECTION_C, 'C');
+
+      // Defaults
+      $('#date').value = todayISO();
+
+      $('#calcBtn').addEventListener('click', () => {
+        const answers = collectAnswers();
+        const missing = validateAnswers(answers);
+        if (missing.length) {
+          $('#errors').textContent = `Please answer all items in Sections A, B, and C (missing: ${missing.length}).`;
+          toast('Some items are missing.');
+          return;
+        } else {
+          $('#errors').textContent = '';
+        }
+        const profile = scoreProfile(answers);
+        renderResults(profile);
+        // attach export button to current profile
+        $('#exportBtn').onclick = () => exportCSV(profile);
+        $('#saveBtn').onclick = () => saveCurrent(profile);
+      });
+
+      $('#resetBtn').addEventListener('click', resetAnswers);
+      $('#demoBtn').addEventListener('click', () => autofillDemo());
+      $('#printBtn').addEventListener('click', () => window.print());
+      $('#themeBtn').addEventListener('click', toggleTheme);
+      $('#newBtn').addEventListener('click', () => { setMeta({name:'',email:'',role:'',date:todayISO()}); resetAnswers(); });
+
+      renderSaved();
+
+      // Hints
+      $('#hints').innerHTML = `
+        <span class="chip">1–7 Likert scale</span>
+        <span class="chip">Weighted stress items</span>
+        <span class="chip">Local saves</span>
+        <span class="chip">CSV export</span>
+        <span class="chip">Print to PDF</span>
+      `;
+    }
+
+    // Demo autofill for quick testing
+    function autofillDemo() {
+      // fill with mid-high variance pattern favoring Growth + Variety
+      const sets = [SECTION_A, SECTION_B, SECTION_C];
+      sets.forEach((arr, sIdx) => {
+        const key = sIdx===0?'A':(sIdx===1?'B':'C');
+        arr.forEach((item, idx) => {
+          // base value
+          let v = 4;
+          if (['growth','variety'].includes(item.d)) v = 6;
+          if (item.d==='certainty') v = 3;
+          if (sIdx===1 && item.d==='growth') v = 7; // stressed into growth
+          const el = document.querySelector(`input[name="${key}_${idx}"][value="${v}"]`);
+          if (el) el.checked = true;
+        });
+      });
+      toast('Demo answers filled.');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
