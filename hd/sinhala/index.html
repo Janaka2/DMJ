@@ -1,1 +1,117 @@
-fdfd
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>මානව රියදුරු තක්සේරුව – මානව අවශ්‍යතා 6 (Single-File SaaS)</title>
+  <meta name="description" content="ප්‍රධාන මානව රියදුරු (ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6) ඇගයීම, ආතති හැසිරීම් සහ සෘණාත්මක හැඟීම් රටා ඇතුළත් වෘත්තීයමය තක්සේරුව." />
+  <!-- your same styles here -->
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">HN</div>
+        <div>
+          <div class="title">මානව රියදුරු තක්සේරුව</div>
+          <div class="subtitle">ටෝනි රොබින්ස්ගේ මානව අවශ්‍යතා 6 · ආතති හැසිරීම් · සෘණාත්මක හැඟීම් රටා</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="newBtn" class="btn">නව</button>
+        <button id="saveBtn" class="btn">සුරකින්න</button>
+        <button id="exportBtn" class="btn">CSV නිරයාත</button>
+        <button id="printBtn" class="btn">මුද්‍රණය / PDF</button>
+        <button id="themeBtn" class="btn">☾ තේමාව</button>
+      </div>
+    </header>
+
+    <!-- Respondent Info -->
+    <section class="card">
+      <h3>ප්‍රතිචාර දෙන අය</h3>
+      <p class="muted">විකල්ප සම්බන්ධතා ක්ෂේත්‍ර ඔබට ප්‍රතිඵල සකස් කිරීමට උපකාරී වේ (ඔබේ බ්‍රව්සරයේ පමණක් ගබඩා වේ, නිරයාත කළහොත් විතරයි පිටතට යන්නේ).</p>
+      <div class="grid col-2">
+        <div>
+          <label for="name">නම</label>
+          <input id="name" type="text" placeholder="උදා: අලෙක්ස් මියුලර්" />
+        </div>
+        <div>
+          <label for="email">ඊමේල්</label>
+          <input id="email" type="email" placeholder="උදා: alex@example.com" />
+        </div>
+        <div>
+          <label for="role">භූමිකාව / පරිසරය</label>
+          <input id="role" type="text" placeholder="උදා: නිෂ්පාදන කළමනාකරු, සම්මුඛ පරීක්ෂණය, පුහුණුව" />
+        </div>
+        <div>
+          <label for="date">දිනය</label>
+          <input id="date" type="text" placeholder="YYYY-MM-DD" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Assessment Form -->
+    <section class="grid col-2">
+      <div class="card">
+        <h3>අංශ A · එදිනෙදා අභිප්‍රේරණ</h3>
+        <p class="muted">සෑම ප්‍රකාශයක්ම ශ්‍රේණිගත කරන්න <b>1 (දැඩි ලෙස එකඟ නොවෙමි)</b> සිට <b>7 (පූර්ණයෙන් එකඟයි)</b> දක්වා.</p>
+        <div id="sectionA"></div>
+      </div>
+
+      <div class="card">
+        <h3>අංශ B · ආතතිය යටතේ හැසිරීම්</h3>
+        <p class="muted">පීඩනය යටතේ, මේවා සිදු වීමේ හැඟීම කොපමණද? <b>1 (කවදාවත් නැත)</b> සිට <b>7 (සෑම විටම)</b> දක්වා.</p>
+        <div id="sectionB"></div>
+      </div>
+
+      <div class="card">
+        <h3>අංශ C · සෘණාත්මක හැඟීම් රටා</h3>
+        <p class="muted">ඔබට මෙම හැඟීම් කොපමණ වාර ගණනාවක පටන්ගන්නවද? <b>1 (අත්‍යල්පයෙන්)</b> සිට <b>7 (බොහෝ වාර ගණනාවක)</b> දක්වා.</p>
+        <div id="sectionC"></div>
+      </div>
+
+      <div class="card">
+        <h3>ලකුණු සහ අවබෝධය</h3>
+        <p class="muted"><b>ගණනය කරන්න</b> ක්ලික් කර ප්‍රධාන රියදුරු, සමාන්‍ය ගුණාංග සහ පුහුණු සටහන් බලන්න. ඔබට බහු ඇගයීම් දේශීයව සුරක්ෂිත කළ හැක.</p>
+        <div class="chips" id="hints"></div>
+        <div class="divider"></div>
+        <div class="kpis">
+          <div class="kpi"><h4>ප්‍රධාන රියදුරු</h4><div class="num" id="kpiTop">–</div></div>
+          <div class="kpi"><h4>ඉහළ 2 අතර තරඟය</h4><div class="num" id="kpiSpread">–</div></div>
+          <div class="kpi"><h4>සමතුලිත දර්ශකය</h4><div class="num" id="kpiBalance">–</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="stats" id="results"></div>
+        <div id="interpretation" class="muted" style="margin-top:10px;"></div>
+        <div id="errors" class="error"></div>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="calcBtn" class="btn-primary">ගණනය කරන්න</button>
+          <button id="resetBtn" class="btn-ghost">පිළිතුරු නැවත සකසන්න</button>
+          <button id="demoBtn" class="btn-ghost">උදාහරණ පුරවන්න</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Assessments -->
+    <section class="card">
+      <h3>සුරැකුම් ඇගයීම් (දේශීය)</h3>
+      <p class="muted">සියලුම දත්ත ඔබේ බ්‍රව්සරයේ පවතී, නිරයාත කරන තුරු. අයිතමයක් තෝරාගන්න එය නැවත පූරණය කිරීමට.</p>
+      <div id="savedList" class="grid"></div>
+    </section>
+
+    <p class="footer">තොරතුරු නිරීක්ෂණ නැත, සේවාදායක නැත. GitHub Pages මත ඔබට සුරකින්න පුළුවන් එකම ගොනුවක යෙදුම. © 2025 — මානව රියදුරු මෙවලම.</p>
+  </div>
+
+  <script>
+    const DRIVERS = [
+      { key: 'certainty', label: 'නිශ්චිතතාවය', color: '#7aa2ff' },
+      { key: 'variety', label: 'විවිධතාවය', color: '#71e7d1' },
+      { key: 'significance', label: 'වැදගත්කම', color: '#f4ac52' },
+      { key: 'connection', label: 'ආදරය සහ සම්බන්ධතාවය', color: '#f585ae' },
+      { key: 'growth', label: 'වර්ධනය', color: '#a9e34b' },
+      { key: 'contribution', label: 'දායකත්වය', color: '#b1a7ff' }
+    ];
+
+    // Example of Section A translation
+    const SECTION_A = [
+      { d: 'certainty',
