@@ -1,1 +1,145 @@
-dd
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bewertung menschlicher Antriebe – 6 menschliche Bedürfnisse (Single-File SaaS)</title>
+  <meta name="description" content="Professionelle Bewertung zur Ermittlung dominanter menschlicher Antriebe (Tony Robbins’ 6 menschliche Bedürfnisse) inklusive Stressverhalten und Muster negativer Emotionen." />
+  <!-- keep your styles -->
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">HN</div>
+        <div>
+          <div class="title">Bewertung menschlicher Antriebe</div>
+          <div class="subtitle">Tony Robbins’ 6 menschliche Bedürfnisse · Stressverhalten · Muster negativer Emotionen</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="newBtn" class="btn">Neu</button>
+        <button id="saveBtn" class="btn">Speichern</button>
+        <button id="exportBtn" class="btn">CSV exportieren</button>
+        <button id="printBtn" class="btn">Drucken / PDF</button>
+        <button id="themeBtn" class="btn">☾ Thema</button>
+      </div>
+    </header>
+
+    <!-- Respondent Info -->
+    <section class="card">
+      <h3>Teilnehmer</h3>
+      <p class="muted">Optionale Kontaktfelder helfen dir, Ergebnisse zu organisieren (werden nur in deinem Browser gespeichert, außer du exportierst sie).</p>
+      <div class="grid col-2">
+        <div>
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="z. B. Alex Müller" />
+        </div>
+        <div>
+          <label for="email">E-Mail</label>
+          <input id="email" type="email" placeholder="z. B. alex@example.com" />
+        </div>
+        <div>
+          <label for="role">Rolle / Kontext</label>
+          <input id="role" type="text" placeholder="z. B. Produktmanager, Interview, Coaching" />
+        </div>
+        <div>
+          <label for="date">Datum</label>
+          <input id="date" type="text" placeholder="JJJJ-MM-TT" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Assessment Form -->
+    <section class="grid col-2">
+      <div class="card">
+        <h3>Abschnitt A · Alltägliche Motivationen</h3>
+        <p class="muted">Bewerte jede Aussage von <b>1 (stimme überhaupt nicht zu)</b> bis <b>7 (stimme voll zu)</b>.</p>
+        <div id="sectionA"></div>
+      </div>
+
+      <div class="card">
+        <h3>Abschnitt B · Verhalten unter Stress</h3>
+        <p class="muted">Unter Druck – wie wahrscheinlich sind diese Reaktionen? <b>1 (nie)</b> bis <b>7 (immer)</b>.</p>
+        <div id="sectionB"></div>
+      </div>
+
+      <div class="card">
+        <h3>Abschnitt C · Muster negativer Emotionen</h3>
+        <p class="muted">Wie oft erlebst du diese Emotionen? <b>1 (selten)</b> bis <b>7 (sehr oft)</b>.</p>
+        <div id="sectionC"></div>
+      </div>
+
+      <div class="card">
+        <h3>Auswertung & Erkenntnisse</h3>
+        <p class="muted">Klicke auf <b>Berechnen</b>, um dominierende Antriebe, Profilbalance und Coaching-Hinweise zu sehen. Mehrere Bewertungen können lokal gespeichert werden.</p>
+        <div class="chips" id="hints"></div>
+        <div class="divider"></div>
+        <div class="kpis">
+          <div class="kpi"><h4>Hauptantrieb</h4><div class="num" id="kpiTop">–</div></div>
+          <div class="kpi"><h4>Top-2 Abstand</h4><div class="num" id="kpiSpread">–</div></div>
+          <div class="kpi"><h4>Balance-Index</h4><div class="num" id="kpiBalance">–</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="stats" id="results"></div>
+        <div id="interpretation" class="muted" style="margin-top:10px;"></div>
+        <div id="errors" class="error"></div>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="calcBtn" class="btn-primary">Berechnen</button>
+          <button id="resetBtn" class="btn-ghost">Antworten zurücksetzen</button>
+          <button id="demoBtn" class="btn-ghost">Demo ausfüllen</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Saved Assessments -->
+    <section class="card">
+      <h3>Gespeicherte Bewertungen (Lokal)</h3>
+      <p class="muted">Alle Daten bleiben in deinem Browser, bis du sie exportierst. Klicke auf ein Element, um es zu laden.</p>
+      <div id="savedList" class="grid"></div>
+    </section>
+
+    <p class="footer">Kein Tracking, keine Server. Einzelfile-App, die du auf GitHub Pages hosten kannst. © 2025 — Toolkit menschlicher Antriebe.</p>
+  </div>
+
+  <script>
+    const DRIVERS = [
+      { key: 'certainty', label: 'Sicherheit', color: '#7aa2ff' },
+      { key: 'variety', label: 'Abwechslung', color: '#71e7d1' },
+      { key: 'significance', label: 'Bedeutsamkeit', color: '#f4ac52' },
+      { key: 'connection', label: 'Liebe & Verbundenheit', color: '#f585ae' },
+      { key: 'growth', label: 'Wachstum', color: '#a9e34b' },
+      { key: 'contribution', label: 'Beitrag', color: '#b1a7ff' }
+    ];
+
+    // Example of Section A German translation
+    const SECTION_A = [
+      { d: 'certainty',  t: 'Ich bevorzuge Stabilität, klare Pläne und Vorhersehbarkeit in meinem Leben.' },
+      { d: 'certainty',  t: 'Ich ergreife Maßnahmen, um Risiken zu reduzieren (z. B. Versicherung, Puffer, Backup-Pläne).' },
+      { d: 'certainty',  t: 'Ich fühle mich am besten, wenn ich Ergebnisse und Umgebungen kontrollieren kann.' },
+
+      { d: 'variety',    t: 'Ich suche nach Neuem und Veränderung, um Energie zu tanken.' },
+      { d: 'variety',    t: 'Ich genieße spontane Entscheidungen und das Ausprobieren neuer Dinge.' },
+      { d: 'variety',    t: 'Routine langweilt mich; ich wechsle gerne oft ab.' },
+
+      { d: 'significance', t: 'Respekt und Anerkennung sind mir sehr wichtig.' },
+      { d: 'significance', t: 'Ich arbeite hart, um mich hervorzuheben und besser zu sein als andere.' },
+      { d: 'significance', t: 'Titel, Erfolge oder Status geben mir starke Motivation.' },
+
+      { d: 'connection', t: 'Enge Beziehungen und Zugehörigkeit stehen im Zentrum meines Lebens.' },
+      { d: 'connection', t: 'Ich investiere Zeit in Familie, Freunde und Gemeinschaft.' },
+      { d: 'connection', t: 'Harmonie und Verbundenheit leiten oft meine Entscheidungen.' },
+
+      { d: 'growth',     t: 'Kontinuierliches Lernen und Verbesserung sind für mich unverzichtbar.' },
+      { d: 'growth',     t: 'Ich setze mir Ziele und verfolge sie, um meine Fähigkeiten auszubauen.' },
+      { d: 'growth',     t: 'Stillstand oder Stagnation ist für mich unerträglich.' },
+
+      { d: 'contribution', t: 'Ich fühle mich erfüllt, wenn ich anderen helfe oder einem größeren Zweck diene.' },
+      { d: 'contribution', t: 'Ich messe Erfolg an der positiven Wirkung, die ich auf andere habe.' },
+      { d: 'contribution', t: 'Ich suche nach Möglichkeiten, über meine eigenen Bedürfnisse hinaus etwas zurückzugeben.' },
+    ];
+
+    // → Genauso SECTION_B & SECTION_C ins Deutsche übersetzen
+  </script>
+</body>
+</html>
